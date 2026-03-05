@@ -207,6 +207,16 @@ Think of it like a human reviewing their journal and updating their mental model
 
 The goal: Be helpful without being annoying. Check in a few times a day, do useful background work, but respect quiet time.
 
+## Self-Improvement Logging
+
+When any of these happen, log to `.learnings/`:
+- Command/tool fails → `ERRORS.md`
+- User corrects me → `LEARNINGS.md` (category: correction)
+- User wants something i can't do → `FEATURE_REQUESTS.md`
+- Found a better approach → `LEARNINGS.md` (category: best_practice)
+
+Periodically promote broadly useful learnings to `SOUL.md`, `AGENTS.md`, or `TOOLS.md`.
+
 ## Make It Yours
 
 This is a starting point. Add your own conventions, style, and rules as you figure out what works.
