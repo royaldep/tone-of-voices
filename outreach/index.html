@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Outreach Sequences</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0f0f11;
+    color: #e2e2e2;
+    min-height: 100vh;
+    padding: 32px 24px;
+  }
+
+  h1 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 24px;
+    color: #fff;
+    letter-spacing: -0.3px;
+  }
+
+  /* Paste zone */
+  .paste-zone {
+    background: #1a1a1f;
+    border: 1.5px dashed #333;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 24px;
+    transition: border-color 0.2s;
+  }
+  .paste-zone:focus-within { border-color: #6c63ff; }
+  .paste-zone label {
+    display: block;
+    font-size: 0.75rem;
+    color: #888;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .paste-zone textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #ccc;
+    font-size: 0.85rem;
+    font-family: monospace;
+    resize: none;
+    height: 60px;
+  }
+  .paste-zone textarea::placeholder { color: #444; }
+  .paste-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .btn-import {
+    background: #6c63ff;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 7px 16px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.15s;
+  }
+  .btn-import:hover { background: #5a52e0; }
+  .btn-clear-paste {
+    background: transparent;
+    color: #666;
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 7px 16px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .btn-clear-paste:hover { color: #aaa; border-color: #555; }
+
+  /* Toolbar */
+  .toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .row-count { font-size: 0.8rem; color: #555; }
+  .btn-add-row {
+    background: transparent;
+    color: #6c63ff;
+    border: 1px solid #6c63ff44;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-add-row:hover { background: #6c63ff18; }
+
+  /* Table */
+  .table-wrap {
+    background: #1a1a1f;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #222;
+  }
+
+  .table-header {
+    display: grid;
+    background: #141416;
+    border-bottom: 1px solid #222;
+    padding: 10px 16px;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #555;
+    font-weight: 600;
+  }
+
+  /* Row */
+  .row-item {
+    border-bottom: 1px solid #1e1e22;
+  }
+  .row-item:last-child { border-bottom: none; }
+
+  .row-summary {
+    display: grid;
+    align-items: center;
+    padding: 11px 16px;
+    cursor: pointer;
+    transition: background 0.12s;
+    gap: 8px;
+  }
+  .row-summary:hover { background: #1f1f26; }
+
+  .row-summary .cell {
+    font-size: 0.85rem;
+    color: #ccc;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .row-summary .cell.email { color: #888; font-size: 0.8rem; }
+
+  .expand-icon {
+    color: #444;
+    font-size: 0.7rem;
+    transition: transform 0.2s;
+    justify-self: end;
+    user-select: none;
+  }
+  .row-item.open .expand-icon { transform: rotate(180deg); color: #6c63ff; }
+
+  /* Status badge */
+  .status-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+  .status-not-started { background: #1e1e22; color: #666; }
+  .status-in-progress { background: #1a1f35; color: #6c8fff; }
+  .status-sent        { background: #0f2b1a; color: #4caf7d; }
+  .status-replied     { background: #2b1a0f; color: #e08c4c; }
+
+  /* Expanded panel */
+  .row-detail {
+    display: none;
+    padding: 20px 20px 24px;
+    background: #16161a;
+    border-top: 1px solid #1e1e22;
+  }
+  .row-item.open .row-detail { display: block; }
+
+  .detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  @media(max-width: 600px) { .detail-grid { grid-template-columns: 1fr; } }
+
+  .field-group label {
+    display: block;
+    font-size: 0.7rem;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+  }
+  .field-group input, .field-group select {
+    width: 100%;
+    background: #1e1e24;
+    border: 1px solid #2a2a30;
+    border-radius: 6px;
+    padding: 8px 10px;
+    color: #ddd;
+    font-size: 0.85rem;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .field-group input:focus, .field-group select:focus { border-color: #6c63ff88; }
+  .field-group select option { background: #1e1e24; }
+
+  /* Email sequence */
+  .seq-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .seq-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #555;
+    font-weight: 600;
+  }
+  .btn-add-email {
+    background: transparent;
+    color: #6c63ff;
+    border: 1px solid #6c63ff44;
+    border-radius: 5px;
+    padding: 4px 12px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-add-email:hover { background: #6c63ff18; }
+
+  .email-boxes { display: flex; flex-direction: column; gap: 10px; }
+
+  .email-box {
+    background: #1a1a20;
+    border: 1px solid #262630;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .email-box-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: #1e1e26;
+    border-bottom: 1px solid #262630;
+  }
+  .email-box-num {
+    font-size: 0.72rem;
+    color: #6c63ff;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .btn-remove-email {
+    background: transparent;
+    border: none;
+    color: #444;
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 0 2px;
+    line-height: 1;
+    transition: color 0.15s;
+  }
+  .btn-remove-email:hover { color: #e05c5c; }
+
+  .email-box-subject input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #262630;
+    padding: 8px 12px;
+    color: #ccc;
+    font-size: 0.83rem;
+    outline: none;
+  }
+  .email-box-subject input::placeholder { color: #3a3a44; }
+  .email-box-subject input:focus { background: #1c1c24; }
+
+  .email-box textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 10px 12px;
+    color: #bbb;
+    font-size: 0.83rem;
+    font-family: inherit;
+    resize: vertical;
+    outline: none;
+    min-height: 90px;
+    line-height: 1.55;
+  }
+  .email-box textarea::placeholder { color: #3a3a44; }
+  .email-box textarea:focus { background: #1c1c24; }
+
+  /* Row actions */
+  .row-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    justify-content: flex-end;
+  }
+  .btn-save {
+    background: #6c63ff;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 7px 18px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.15s;
+  }
+  .btn-save:hover { background: #5a52e0; }
+  .btn-delete-row {
+    background: transparent;
+    color: #666;
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 7px 14px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+  .btn-delete-row:hover { color: #e05c5c; border-color: #e05c5c44; }
+
+  .save-flash {
+    font-size: 0.78rem;
+    color: #4caf7d;
+    opacity: 0;
+    transition: opacity 0.3s;
+    align-self: center;
+  }
+  .save-flash.show { opacity: 1; }
+
+  .empty-state {
+    padding: 40px;
+    text-align: center;
+    color: #444;
+    font-size: 0.9rem;
+  }
+</style>
+</head>
+<body>
+
+<h1>📬 Outreach Sequences</h1>
+
+<!-- Paste zone -->
+<div class="paste-zone">
+  <label>Paste from Google Sheets (include header row)</label>
+  <textarea id="pasteArea" placeholder="Copy rows from Google Sheets and paste here..."></textarea>
+  <div class="paste-actions">
+    <button class="btn-import" onclick="importPaste()">Import Rows</button>
+    <button class="btn-clear-paste" onclick="clearPaste()">Clear</button>
+  </div>
+</div>
+
+<!-- Toolbar -->
+<div class="toolbar">
+  <span class="row-count" id="rowCount">0 contacts</span>
+  <button class="btn-add-row" onclick="addBlankRow()">+ Add Row</button>
+</div>
+
+<!-- Table -->
+<div class="table-wrap" id="tableWrap">
+  <div class="table-header" id="tableHeader" style="display:none"></div>
+  <div id="rowList">
+    <div class="empty-state">No contacts yet — paste from Google Sheets or add a row manually.</div>
+  </div>
+</div>
+
+<script>
+let contacts = JSON.parse(localStorage.getItem('outreach_contacts') || '[]');
+let columns = JSON.parse(localStorage.getItem('outreach_columns') || '["Name","Email","Company","Status"]');
+
+function save() {
+  localStorage.setItem('outreach_contacts', JSON.stringify(contacts));
+  localStorage.setItem('outreach_columns', JSON.stringify(columns));
+}
+
+function detectEmailCol() {
+  return columns.findIndex(c => c.toLowerCase().includes('email'));
+}
+
+function detectNameCol() {
+  return columns.findIndex(c => c.toLowerCase().includes('name'));
+}
+
+function importPaste() {
+  const raw = document.getElementById('pasteArea').value.trim();
+  if (!raw) return;
+  const lines = raw.split('\n').map(l => l.split('\t'));
+  if (lines.length < 1) return;
+
+  // First row = headers
+  const headers = lines[0].map(h => h.trim());
+  columns = headers.length > 1 ? headers : columns;
+
+  const rows = lines.slice(1);
+  rows.forEach(cells => {
+    if (cells.every(c => !c.trim())) return;
+    const rowData = {};
+    columns.forEach((col, i) => { rowData[col] = (cells[i] || '').trim(); });
+    contacts.push({
+      id: Date.now() + Math.random(),
+      data: rowData,
+      status: rowData['Status'] || 'not-started',
+      sequences: defaultSequences(rowData)
+    });
+  });
+
+  save();
+  render();
+  clearPaste();
+}
+
+function defaultSequences(rowData) {
+  const emailIdx = detectEmailCol();
+  const email = emailIdx >= 0 ? rowData[columns[emailIdx]] || '' : '';
+  return [1,2,3,4].map(n => ({
+    id: n,
+    subject: '',
+    body: '',
+    to: email
+  }));
+}
+
+function clearPaste() {
+  document.getElementById('pasteArea').value = '';
+}
+
+function addBlankRow() {
+  const rowData = {};
+  columns.forEach(c => rowData[c] = '');
+  contacts.push({
+    id: Date.now() + Math.random(),
+    data: rowData,
+    status: 'not-started',
+    sequences: defaultSequences(rowData)
+  });
+  save();
+  render();
+  // auto-open the new row
+  setTimeout(() => {
+    const items = document.querySelectorAll('.row-item');
+    if (items.length) toggleRow(items[items.length - 1]);
+  }, 50);
+}
+
+function toggleRow(el) {
+  el.classList.toggle('open');
+}
+
+function getEmail(contact) {
+  const idx = detectEmailCol();
+  return idx >= 0 ? contact.data[columns[idx]] || '' : '';
+}
+
+function getName(contact) {
+  const idx = detectNameCol();
+  return idx >= 0 ? contact.data[columns[idx]] || '(no name)' : Object.values(contact.data)[0] || '(no name)';
+}
+
+function statusClass(s) {
+  const map = { 'not-started':'not-started','in-progress':'in-progress','sent':'sent','replied':'replied' };
+  return 'status-' + (map[s] || 'not-started');
+}
+function statusLabel(s) {
+  const map = { 'not-started':'Not Started','in-progress':'In Progress','sent':'Sent','replied':'Replied' };
+  return map[s] || s;
+}
+
+function render() {
+  const listEl = document.getElementById('rowList');
+  const headerEl = document.getElementById('tableHeader');
+  const countEl = document.getElementById('rowCount');
+  countEl.textContent = contacts.length + ' contact' + (contacts.length !== 1 ? 's' : '');
+
+  if (contacts.length === 0) {
+    listEl.innerHTML = '<div class="empty-state">No contacts yet — paste from Google Sheets or add a row manually.</div>';
+    headerEl.style.display = 'none';
+    return;
+  }
+
+  // header
+  const colCount = columns.length;
+  const gridCols = `repeat(${Math.min(colCount, 4)}, 1fr) 80px 24px`;
+  headerEl.style.display = 'grid';
+  headerEl.style.gridTemplateColumns = gridCols;
+  headerEl.innerHTML = columns.slice(0, 4).map(c => `<span>${c}</span>`).join('') + '<span>Status</span><span></span>';
+
+  listEl.innerHTML = contacts.map((c, ci) => {
+    const email = getEmail(c);
+    const nameCells = columns.slice(0, 4).map(col => {
+      const isEmail = col.toLowerCase().includes('email');
+      return `<div class="cell ${isEmail ? 'email' : ''}">${c.data[col] || '—'}</div>`;
+    }).join('');
+
+    const seqHTML = c.sequences.map((seq, si) => `
+      <div class="email-box" data-ci="${ci}" data-si="${si}">
+        <div class="email-box-header">
+          <span class="email-box-num">Email ${si + 1}</span>
+          <button class="btn-remove-email" onclick="removeSeq(${ci},${si})" title="Remove">✕</button>
+        </div>
+        <div class="email-box-subject">
+          <input type="text" placeholder="Subject line..." value="${escHtml(seq.subject)}"
+            oninput="contacts[${ci}].sequences[${si}].subject=this.value">
+        </div>
+        <textarea placeholder="Write your email body here..."
+          oninput="contacts[${ci}].sequences[${si}].body=this.value">${escHtml(seq.body)}</textarea>
+      </div>
+    `).join('');
+
+    const fieldInputs = columns.map(col => `
+      <div class="field-group">
+        <label>${col}</label>
+        <input type="text" value="${escHtml(c.data[col] || '')}"
+          oninput="contacts[${ci}].data['${col}']=this.value${col.toLowerCase().includes('email') ? `;syncEmail(${ci})` : ''}">
+      </div>
+    `).join('');
+
+    return `
+    <div class="row-item" id="row-${ci}">
+      <div class="row-summary" style="grid-template-columns:${gridCols}" onclick="toggleRow(this.parentElement)">
+        ${nameCells}
+        <div class="cell">
+          <span class="status-badge ${statusClass(c.status)}">${statusLabel(c.status)}</span>
+        </div>
+        <div class="expand-icon">▼</div>
+      </div>
+      <div class="row-detail">
+        <div class="detail-grid">
+          ${fieldInputs}
+          <div class="field-group">
+            <label>Status</label>
+            <select onchange="contacts[${ci}].status=this.value;rerenderRow(${ci})">
+              ${['not-started','in-progress','sent','replied'].map(s =>
+                `<option value="${s}" ${c.status===s?'selected':''}>${statusLabel(s)}</option>`
+              ).join('')}
+            </select>
+          </div>
+        </div>
+        <div class="seq-header">
+          <span class="seq-label">Email Sequence (${c.sequences.length})</span>
+          <button class="btn-add-email" onclick="addSeq(${ci})">+ Add Email</button>
+        </div>
+        <div class="email-boxes">${seqHTML}</div>
+        <div class="row-actions">
+          <span class="save-flash" id="flash-${ci}">Saved ✓</span>
+          <button class="btn-delete-row" onclick="deleteRow(${ci})">Delete</button>
+          <button class="btn-save" onclick="saveRow(${ci})">Save</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function syncEmail(ci) {
+  const email = getEmail(contacts[ci]);
+  contacts[ci].sequences.forEach(s => s.to = email);
+}
+
+function addSeq(ci) {
+  const email = getEmail(contacts[ci]);
+  contacts[ci].sequences.push({ id: Date.now(), subject: '', body: '', to: email });
+  save();
+  const wasOpen = document.getElementById('row-' + ci)?.classList.contains('open');
+  render();
+  if (wasOpen) document.getElementById('row-' + ci)?.classList.add('open');
+}
+
+function removeSeq(ci, si) {
+  if (contacts[ci].sequences.length <= 1) return;
+  contacts[ci].sequences.splice(si, 1);
+  save();
+  const wasOpen = document.getElementById('row-' + ci)?.classList.contains('open');
+  render();
+  if (wasOpen) document.getElementById('row-' + ci)?.classList.add('open');
+}
+
+function saveRow(ci) {
+  save();
+  const flash = document.getElementById('flash-' + ci);
+  if (flash) { flash.classList.add('show'); setTimeout(() => flash.classList.remove('show'), 1800); }
+}
+
+function deleteRow(ci) {
+  if (!confirm('Delete this contact?')) return;
+  contacts.splice(ci, 1);
+  save();
+  render();
+}
+
+function rerenderRow(ci) {
+  const wasOpen = document.getElementById('row-' + ci)?.classList.contains('open');
+  render();
+  if (wasOpen) document.getElementById('row-' + ci)?.classList.add('open');
+}
+
+render();
+</script>
+</body>
+</html>
