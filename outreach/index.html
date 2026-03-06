@@ -464,6 +464,19 @@
     transition: background 0.15s;
   }
   .btn-save:hover { background: #5a52e0; }
+  .btn-drafts {
+    background: transparent;
+    color: #e0a84c;
+    border: 1px solid #e0a84c44;
+    border-radius: 6px;
+    padding: 7px 14px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.15s;
+  }
+  .btn-drafts:hover { background: #e0a84c18; }
+  .btn-drafts:disabled { opacity: 0.5; cursor: default; }
   .btn-delete-row {
     background: transparent;
     color: #666;
@@ -923,6 +936,7 @@ function render() {
         <div class="row-actions">
           <span class="save-flash" id="flash-${ci}">Saved ✓</span>
           <button class="btn-delete-row" onclick="deleteRow(${ci})">Delete</button>
+          <button class="btn-drafts" id="drafts-${ci}" onclick="createDrafts(${ci})">Create Drafts</button>
           <button class="btn-save" onclick="saveRow(${ci})">Save</button>
         </div>
       </div>
@@ -1113,6 +1127,38 @@ function copyText(text, btn) {
 
 function copyField(ci, col, btn) {
   copyText(contacts[ci].data[col] || '', btn);
+}
+
+async function createDrafts(ci) {
+  const url = (localStorage.getItem('sheets_script_url') || '').trim();
+  if (!url) { alert('Paste your Apps Script URL in the Sheets Script URL field first.'); return; }
+
+  const c = contacts[ci];
+  const btn = document.getElementById('drafts-' + ci);
+  if (btn) { btn.textContent = 'Creating...'; btn.disabled = true; }
+
+  const payload = {
+    action: 'createDrafts',
+    sequences: c.sequences.map(s => ({
+      to:      s.to || getEmail(c) || '',
+      subject: s.subject || '',
+      body:    s.body || ''
+    }))
+  };
+
+  try {
+    const form = new URLSearchParams({ data: JSON.stringify(payload) });
+    await fetch(url, { method: 'POST', mode: 'no-cors', body: form });
+    if (btn) { btn.textContent = 'Drafts Created ✓'; btn.style.color = '#4caf7d'; }
+    setTimeout(() => {
+      if (btn) { btn.textContent = 'Create Drafts'; btn.disabled = false; btn.style.color = ''; }
+    }, 3000);
+  } catch (err) {
+    if (btn) { btn.textContent = 'Failed'; btn.style.color = '#e05c5c'; }
+    setTimeout(() => {
+      if (btn) { btn.textContent = 'Create Drafts'; btn.disabled = false; btn.style.color = ''; }
+    }, 3000);
+  }
 }
 
 function openGmail(ci, si) {

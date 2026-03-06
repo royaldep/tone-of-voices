@@ -6,6 +6,13 @@ function doPost(e) {
   try {
     const raw = e.parameter.data || e.postData.contents || '{}';
     const data = JSON.parse(raw);
+
+    // Route to draft creation if that's the action
+    if (data.action === 'createDrafts') {
+      return createDrafts(data);
+    }
+
+    // --- Sheets sync ---
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const sheet = data.sheetName
       ? ss.getSheetByName(data.sheetName)
@@ -81,6 +88,19 @@ function doPost(e) {
   } catch (err) {
     return respond({ error: err.toString() });
   }
+}
+
+function createDrafts(data) {
+  const created = [];
+  (data.sequences || []).forEach((seq, i) => {
+    const to      = seq.to || '';
+    const subject = seq.subject || '';
+    const body    = seq.body || '';
+    if (!to && !subject && !body) return; // skip fully empty sequences
+    GmailApp.createDraft(to, subject, body);
+    created.push(i + 1);
+  });
+  return respond({ success: true, drafts: created });
 }
 
 function respond(obj) {
