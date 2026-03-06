@@ -337,6 +337,8 @@
   .copy-btn.copied { color: #4caf7d; }
   .link-btn { color: #6c8fff; font-size: 0.8rem; }
   .link-btn:hover { color: #99b3ff; background: #6c8fff18; }
+  .gmail-btn { color: #e0734c; }
+  .gmail-btn:hover { color: #f0957a; background: #e0734c18; }
   .field-group input, .field-group select {
     width: 100%;
     background: #1e1e24;
@@ -853,6 +855,7 @@ function render() {
           <div style="display:flex;gap:4px;align-items:center">
             <button class="copy-btn" onclick="copyText(contacts[${ci}].sequences[${si}].subject,this)" title="Copy subject">Subj</button>
             <button class="copy-btn" onclick="copyText(contacts[${ci}].sequences[${si}].body,this)" title="Copy body">Body</button>
+            <button class="copy-btn gmail-btn" onclick="openGmail(${ci},${si})" title="Open in Gmail">Gmail</button>
             <button class="btn-remove-email" onclick="removeSeq(${ci},${si})" title="Remove">✕</button>
           </div>
         </div>
@@ -1110,6 +1113,17 @@ function copyText(text, btn) {
 
 function copyField(ci, col, btn) {
   copyText(contacts[ci].data[col] || '', btn);
+}
+
+function openGmail(ci, si) {
+  const seq = contacts[ci].sequences[si];
+  const to      = encodeURIComponent(seq.to || getEmail(contacts[ci]) || '');
+  const subject = encodeURIComponent(seq.subject || '');
+  const body    = encodeURIComponent(seq.body || '');
+  window.open(
+    `https://mail.google.com/mail/?view=cm&to=${to}&su=${subject}&body=${body}`,
+    '_blank'
+  );
 }
 
 function openLink(ci, col) {
