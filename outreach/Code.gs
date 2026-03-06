@@ -4,7 +4,8 @@
 
 function doPost(e) {
   try {
-    const data = JSON.parse(e.postData.contents);
+    const raw = e.parameter.data || e.postData.contents || '{}';
+    const data = JSON.parse(raw);
     const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
     const lastCol = sheet.getLastColumn();
     const lastRow = sheet.getLastRow();

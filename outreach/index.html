@@ -984,11 +984,11 @@ async function syncToSheets(ci) {
   };
 
   try {
+    const form = new URLSearchParams({ data: JSON.stringify(payload) });
     await fetch(url, {
       method: 'POST',
       mode: 'no-cors',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify(payload)
+      body: form
     });
     if (statusEl) { statusEl.textContent = 'Synced ✓'; statusEl.className = 'sheets-status ok'; }
     setTimeout(() => { if (statusEl) { statusEl.textContent = ''; statusEl.className = 'sheets-status'; } }, 3000);
