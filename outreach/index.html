@@ -70,6 +70,18 @@
     transition: background 0.15s;
   }
   .btn-import:hover { background: #5a52e0; }
+  .btn-import-csv {
+    background: #4caf7d;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 7px 16px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.15s;
+  }
+  .btn-import-csv:hover { background: #3e9a6d; }
   .btn-clear-paste {
     background: transparent;
     color: #666;
@@ -101,6 +113,72 @@
     transition: background 0.15s;
   }
   .btn-add-row:hover { background: #6c63ff18; }
+  .btn-export-csv {
+    background: transparent;
+    color: #4caf7d;
+    border: 1px solid #4caf7d44;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-export-csv:hover { background: #4caf7d18; }
+  .btn-backup {
+    background: transparent;
+    color: #e0a84c;
+    border: 1px solid #e0a84c44;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-backup:hover { background: #e0a84c18; }
+  .btn-restore {
+    background: transparent;
+    color: #888;
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .btn-restore:hover { color: #aaa; border-color: #555; }
+  .btn-clear-all {
+    background: transparent;
+    color: #e15b5b;
+    border: 1px solid #e15b5b44;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-clear-all:hover { background: #e15b5b18; }
+  .btn-delete-selected {
+    background: transparent;
+    color: #e15b5b;
+    border: 1px solid #e15b5b44;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-delete-selected:hover { background: #e15b5b18; }
+  .btn-add-col {
+    background: transparent;
+    color: #6c63ff;
+    border: 1px solid #6c63ff44;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-add-col:hover { background: #6c63ff18; }
 
   /* Table */
   .table-wrap {
@@ -126,6 +204,7 @@
   .row-item {
     border-bottom: 1px solid #1e1e22;
   }
+  .row-item.selected .row-summary { background: #202028; }
   .row-item:last-child { border-bottom: none; }
 
   .row-summary {
@@ -145,7 +224,43 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+  .row-summary .cell.row-num { color: #666; font-size: 0.78rem; }
   .row-summary .cell.email { color: #888; font-size: 0.8rem; }
+  .row-select {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .row-select input { cursor: pointer; }
+  .col-input {
+    background: #141416;
+    border: 1px solid #2a2a33;
+    color: #ccc;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 0.82rem;
+    width: 140px;
+  }
+  .columns-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .col-pill {
+    background: #1a1a1f;
+    border: 1px solid #2a2a33;
+    color: #aaa;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.74rem;
+    cursor: grab;
+    user-select: none;
+  }
+  .col-pill.dragging { opacity: 0.6; }
+  .col-draggable { cursor: grab; }
+  .col-draggable.dragging { opacity: 0.6; }
 
   .expand-icon {
     color: #444;
@@ -169,6 +284,15 @@
   .status-sent        { background: #0f2b1a; color: #4caf7d; }
   .status-replied     { background: #2b1a0f; color: #e08c4c; }
 
+  .email-dots { display: flex; gap: 3px; align-items: center; }
+  .email-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #2a2a32;
+  }
+  .email-dot.filled { background: #6c63ff; }
+  .email-dot.partial { background: #6c63ff55; }
+
   /* Expanded panel */
   .row-detail {
     display: none;
@@ -180,20 +304,37 @@
 
   .detail-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(4, 1fr);
     gap: 12px;
     margin-bottom: 20px;
   }
+  @media(max-width: 900px) { .detail-grid { grid-template-columns: repeat(2, 1fr); } }
   @media(max-width: 600px) { .detail-grid { grid-template-columns: 1fr; } }
 
+  .field-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+  }
   .field-group label {
-    display: block;
     font-size: 0.7rem;
     color: #555;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-bottom: 5px;
   }
+  .copy-btn {
+    background: transparent;
+    border: none;
+    color: #444;
+    cursor: pointer;
+    font-size: 0.68rem;
+    padding: 1px 6px;
+    border-radius: 3px;
+    transition: color 0.15s, background 0.15s;
+  }
+  .copy-btn:hover { color: #aaa; background: #2a2a32; }
+  .copy-btn.copied { color: #4caf7d; }
   .field-group input, .field-group select {
     width: 100%;
     background: #1e1e24;
@@ -234,7 +375,9 @@
   }
   .btn-add-email:hover { background: #6c63ff18; }
 
-  .email-boxes { display: flex; flex-direction: column; gap: 10px; }
+  .email-boxes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  @media(max-width: 1000px) { .email-boxes { grid-template-columns: repeat(2, 1fr); } }
+  @media(max-width: 600px) { .email-boxes { grid-template-columns: 1fr; } }
 
   .email-box {
     background: #1a1a20;
@@ -292,7 +435,7 @@
     font-family: inherit;
     resize: vertical;
     outline: none;
-    min-height: 90px;
+    min-height: 300px;
     line-height: 1.55;
   }
   .email-box textarea::placeholder { color: #3a3a44; }
@@ -352,19 +495,36 @@
 
 <!-- Paste zone -->
 <div class="paste-zone">
-  <label>Paste from Google Sheets (include header row)</label>
+  <label>Paste from Google Sheets (include header row) or import CSV</label>
   <textarea id="pasteArea" placeholder="Copy rows from Google Sheets and paste here..."></textarea>
   <div class="paste-actions">
     <button class="btn-import" onclick="importPaste()">Import Rows</button>
+    <button class="btn-import-csv" onclick="document.getElementById('csvInput').click()">Import CSV</button>
     <button class="btn-clear-paste" onclick="clearPaste()">Clear</button>
+    <input type="file" id="csvInput" accept=".csv,text/csv" style="display:none" onchange="importCSV(this)">
   </div>
 </div>
 
 <!-- Toolbar -->
 <div class="toolbar">
   <span class="row-count" id="rowCount">0 contacts</span>
-  <button class="btn-add-row" onclick="addBlankRow()">+ Add Row</button>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+    <div style="display:flex;gap:6px;align-items:center">
+      <input type="text" id="newColumnName" class="col-input" placeholder="New column"
+        onkeydown="if(event.key==='Enter'){addColumn()}">
+      <button class="btn-add-col" onclick="addColumn()">Add Column</button>
+    </div>
+    <button class="btn-backup" onclick="backupJSON()">Backup</button>
+    <button class="btn-restore" onclick="document.getElementById('restoreInput').click()">Restore</button>
+    <input type="file" id="restoreInput" accept=".json" style="display:none" onchange="restoreJSON(this)">
+    <button class="btn-export-csv" onclick="exportCSV()">Export CSV</button>
+    <button class="btn-delete-selected" onclick="deleteSelected()">Delete Selected</button>
+    <button class="btn-clear-all" onclick="clearAllContacts()">Clear All</button>
+    <button class="btn-add-row" onclick="addBlankRow()">+ Add Row</button>
+  </div>
 </div>
+
+<div class="columns-bar" id="columnsBar"></div>
 
 <!-- Table -->
 <div class="table-wrap" id="tableWrap">
@@ -377,6 +537,8 @@
 <script>
 let contacts = JSON.parse(localStorage.getItem('outreach_contacts') || '[]');
 let columns = JSON.parse(localStorage.getItem('outreach_columns') || '["Name","Email","Company","Status"]');
+let selectedIds = new Set();
+let dragColIndex = null;
 
 function save() {
   localStorage.setItem('outreach_contacts', JSON.stringify(contacts));
@@ -417,6 +579,113 @@ function importPaste() {
   save();
   render();
   clearPaste();
+}
+
+function parseCSV(text) {
+  const rows = [];
+  let row = [];
+  let cell = '';
+  let inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (inQuotes) {
+      if (ch === '"') {
+        if (text[i + 1] === '"') { cell += '"'; i++; }
+        else { inQuotes = false; }
+      } else {
+        cell += ch;
+      }
+      continue;
+    }
+    if (ch === '"') { inQuotes = true; continue; }
+    if (ch === ',') { row.push(cell); cell = ''; continue; }
+    if (ch === '\n') { row.push(cell); rows.push(row); row = []; cell = ''; continue; }
+    if (ch === '\r') { continue; }
+    cell += ch;
+  }
+  row.push(cell);
+  rows.push(row);
+  while (rows.length && rows[rows.length - 1].every(c => !String(c).trim())) rows.pop();
+  return rows;
+}
+
+function importCSV(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const rows = parseCSV(String(e.target.result || ''));
+    if (rows.length < 1) return;
+    const headers = rows[0].map(h => String(h || '').trim());
+    const headerIndex = {};
+    headers.forEach((h, i) => { if (h && headerIndex[h] == null) headerIndex[h] = i; });
+
+    const statusIdx = headers.findIndex(h => h.toLowerCase() === 'outreach_status');
+    const seqCols = {};
+    let maxSeq = 0;
+    headers.forEach((h, i) => {
+      const m = h.match(/^(subject|email)(\d+)$/i);
+      if (!m) return;
+      const idx = parseInt(m[2], 10);
+      maxSeq = Math.max(maxSeq, idx);
+      const key = m[1].toLowerCase();
+      if (!seqCols[idx]) seqCols[idx] = {};
+      seqCols[idx][key] = i;
+    });
+
+    const baseColumns = headers.filter((h, i) => {
+      if (!h) return false;
+      if (i === statusIdx) return false;
+      if (/^(subject|email)\d+$/i.test(h)) return false;
+      return true;
+    });
+    if (baseColumns.length > 0) columns = baseColumns;
+
+    rows.slice(1).forEach(cells => {
+      if (cells.every(c => !String(c).trim())) return;
+      const rowData = {};
+      columns.forEach(col => {
+        const idx = headerIndex[col];
+        rowData[col] = idx != null ? String(cells[idx] ?? '').trim() : '';
+      });
+      let status = 'not-started';
+      if (statusIdx >= 0) status = String(cells[statusIdx] ?? '').trim() || 'not-started';
+      else {
+        const statusCol = columns.find(c => c.toLowerCase() === 'status');
+        if (statusCol) status = String(rowData[statusCol] || '').trim() || 'not-started';
+      }
+
+      let sequences = [];
+      if (maxSeq > 0) {
+        const emailIdx = detectEmailCol();
+        const toEmail = emailIdx >= 0 ? rowData[columns[emailIdx]] || '' : '';
+        for (let i = 1; i <= maxSeq; i++) {
+          const subjectIdx = seqCols[i]?.subject;
+          const bodyIdx = seqCols[i]?.email;
+          sequences.push({
+            id: Date.now() + Math.random(),
+            subject: subjectIdx != null ? String(cells[subjectIdx] ?? '').trim() : '',
+            body: bodyIdx != null ? String(cells[bodyIdx] ?? '').trim() : '',
+            to: toEmail
+          });
+        }
+      } else {
+        sequences = defaultSequences(rowData);
+      }
+
+      contacts.push({
+        id: Date.now() + Math.random(),
+        data: rowData,
+        status: status,
+        sequences: sequences
+      });
+    });
+
+    save();
+    render();
+    input.value = '';
+  };
+  reader.readAsText(file);
 }
 
 function defaultSequences(rowData) {
@@ -479,7 +748,18 @@ function render() {
   const listEl = document.getElementById('rowList');
   const headerEl = document.getElementById('tableHeader');
   const countEl = document.getElementById('rowCount');
+  const columnsBar = document.getElementById('columnsBar');
   countEl.textContent = contacts.length + ' contact' + (contacts.length !== 1 ? 's' : '');
+
+  if (columnsBar) {
+    columnsBar.innerHTML = columns.map((c, i) =>
+      `<span class="col-pill" draggable="true" data-col-index="${i}"
+        ondragstart="onColDragStart(event)"
+        ondragover="onColDragOver(event)"
+        ondrop="onColDrop(event)"
+        ondragend="onColDragEnd(event)">${escHtml(c)}</span>`
+    ).join('');
+  }
 
   if (contacts.length === 0) {
     listEl.innerHTML = '<div class="empty-state">No contacts yet — paste from Google Sheets or add a row manually.</div>';
@@ -489,10 +769,25 @@ function render() {
 
   // header
   const colCount = columns.length;
-  const gridCols = `repeat(${Math.min(colCount, 4)}, 1fr) 80px 24px`;
+  const gridCols = `32px 28px repeat(${Math.min(colCount, 4)}, 1fr) 80px 50px 24px`;
   headerEl.style.display = 'grid';
   headerEl.style.gridTemplateColumns = gridCols;
-  headerEl.innerHTML = columns.slice(0, 4).map(c => `<span>${c}</span>`).join('') + '<span>Status</span><span></span>';
+  headerEl.innerHTML =
+    '<span>#</span>' +
+    '<span class="row-select"><input type="checkbox" onchange="toggleSelectAll(event)"></span>' +
+    columns.slice(0, 4).map((c, i) =>
+      `<span class="col-draggable" draggable="true" data-col-index="${i}"
+        ondragstart="onColDragStart(event)"
+        ondragover="onColDragOver(event)"
+        ondrop="onColDrop(event)"
+        ondragend="onColDragEnd(event)">${c}</span>`
+    ).join('') +
+    '<span>Status</span><span>Emails</span><span></span>';
+  const selectAllEl = headerEl.querySelector('input[type="checkbox"]');
+  if (selectAllEl) {
+    selectAllEl.checked = contacts.length > 0 && selectedIds.size === contacts.length;
+    selectAllEl.indeterminate = selectedIds.size > 0 && selectedIds.size < contacts.length;
+  }
 
   listEl.innerHTML = contacts.map((c, ci) => {
     const email = getEmail(c);
@@ -505,7 +800,11 @@ function render() {
       <div class="email-box" data-ci="${ci}" data-si="${si}">
         <div class="email-box-header">
           <span class="email-box-num">Email ${si + 1}</span>
-          <button class="btn-remove-email" onclick="removeSeq(${ci},${si})" title="Remove">✕</button>
+          <div style="display:flex;gap:4px;align-items:center">
+            <button class="copy-btn" onclick="copyText(contacts[${ci}].sequences[${si}].subject,this)" title="Copy subject">Subj</button>
+            <button class="copy-btn" onclick="copyText(contacts[${ci}].sequences[${si}].body,this)" title="Copy body">Body</button>
+            <button class="btn-remove-email" onclick="removeSeq(${ci},${si})" title="Remove">✕</button>
+          </div>
         </div>
         <div class="email-box-subject">
           <input type="text" placeholder="Subject line..." value="${escHtml(seq.subject)}"
@@ -518,18 +817,30 @@ function render() {
 
     const fieldInputs = columns.map(col => `
       <div class="field-group">
-        <label>${col}</label>
+        <div class="field-label-row">
+          <label>${col}</label>
+          <button class="copy-btn" onclick="copyField(${ci},'${escHtml(col)}',this)">Copy</button>
+        </div>
         <input type="text" value="${escHtml(c.data[col] || '')}"
-          oninput="contacts[${ci}].data['${col}']=this.value${col.toLowerCase().includes('email') ? `;syncEmail(${ci})` : ''}">
+          oninput="contacts[${ci}].data['${escHtml(col)}']=this.value${col.toLowerCase().includes('email') ? `;syncEmail(${ci})` : ''}">
       </div>
     `).join('');
 
+    const rowNum = ci + 1;
+    const checked = selectedIds.has(c.id) ? 'checked' : '';
     return `
-    <div class="row-item" id="row-${ci}">
+    <div class="row-item ${selectedIds.has(c.id) ? 'selected' : ''}" id="row-${ci}">
       <div class="row-summary" style="grid-template-columns:${gridCols}" onclick="toggleRow(this.parentElement)">
+        <div class="cell row-num">${rowNum}</div>
+        <div class="cell row-select"><input type="checkbox" ${checked} onchange="toggleSelect(${ci}, event)"></div>
         ${nameCells}
         <div class="cell">
           <span class="status-badge ${statusClass(c.status)}">${statusLabel(c.status)}</span>
+        </div>
+        <div class="cell">
+          <div class="email-dots" title="${c.sequences.filter(s=>s.subject||s.body).length} of ${c.sequences.length} emails filled">
+            ${c.sequences.map(s => `<div class="email-dot ${s.subject && s.body ? 'filled' : s.subject || s.body ? 'partial' : ''}"></div>`).join('')}
+          </div>
         </div>
         <div class="expand-icon">▼</div>
       </div>
@@ -589,13 +900,98 @@ function removeSeq(ci, si) {
 
 function saveRow(ci) {
   save();
+  rerenderRow(ci);
   const flash = document.getElementById('flash-' + ci);
   if (flash) { flash.classList.add('show'); setTimeout(() => flash.classList.remove('show'), 1800); }
 }
 
+function addColumn() {
+  const input = document.getElementById('newColumnName');
+  if (!input) return;
+  const name = input.value.trim();
+  if (!name) return;
+  const exists = columns.some(c => c.toLowerCase() === name.toLowerCase());
+  if (exists) { alert('Column already exists.'); return; }
+  columns.push(name);
+  contacts.forEach(c => {
+    if (!Object.prototype.hasOwnProperty.call(c.data, name)) c.data[name] = '';
+  });
+  save();
+  render();
+  input.value = '';
+}
+
+function onColDragStart(evt) {
+  const idx = parseInt(evt.currentTarget.dataset.colIndex, 10);
+  if (Number.isNaN(idx)) return;
+  dragColIndex = idx;
+  evt.dataTransfer.effectAllowed = 'move';
+  evt.dataTransfer.setData('text/plain', String(idx));
+  evt.currentTarget.classList.add('dragging');
+}
+
+function onColDragOver(evt) {
+  evt.preventDefault();
+  evt.dataTransfer.dropEffect = 'move';
+}
+
+function onColDrop(evt) {
+  evt.preventDefault();
+  const targetIdx = parseInt(evt.currentTarget.dataset.colIndex, 10);
+  const fromIdx = dragColIndex ?? parseInt(evt.dataTransfer.getData('text/plain'), 10);
+  if (Number.isNaN(fromIdx) || Number.isNaN(targetIdx) || fromIdx === targetIdx) {
+    dragColIndex = null;
+    render();
+    return;
+  }
+  const moved = columns.splice(fromIdx, 1)[0];
+  columns.splice(targetIdx, 0, moved);
+  save();
+  render();
+}
+
+function onColDragEnd(evt) {
+  dragColIndex = null;
+  evt.currentTarget.classList.remove('dragging');
+}
+
 function deleteRow(ci) {
   if (!confirm('Delete this contact?')) return;
+  selectedIds.delete(contacts[ci]?.id);
   contacts.splice(ci, 1);
+  save();
+  render();
+}
+
+function toggleSelect(ci, evt) {
+  evt.stopPropagation();
+  const id = contacts[ci].id;
+  if (selectedIds.has(id)) selectedIds.delete(id);
+  else selectedIds.add(id);
+  render();
+}
+
+function toggleSelectAll(evt) {
+  evt.stopPropagation();
+  const shouldSelect = evt.target.checked;
+  selectedIds = new Set(shouldSelect ? contacts.map(c => c.id) : []);
+  render();
+}
+
+function deleteSelected() {
+  if (selectedIds.size === 0) { alert('No rows selected.'); return; }
+  if (!confirm(`Delete ${selectedIds.size} selected contact${selectedIds.size === 1 ? '' : 's'}?`)) return;
+  contacts = contacts.filter(c => !selectedIds.has(c.id));
+  selectedIds.clear();
+  save();
+  render();
+}
+
+function clearAllContacts() {
+  if (contacts.length === 0) return;
+  if (!confirm('Clear all contacts? This cannot be undone.')) return;
+  contacts = [];
+  selectedIds.clear();
   save();
   render();
 }
@@ -604,6 +1000,92 @@ function rerenderRow(ci) {
   const wasOpen = document.getElementById('row-' + ci)?.classList.contains('open');
   render();
   if (wasOpen) document.getElementById('row-' + ci)?.classList.add('open');
+}
+
+function copyText(text, btn) {
+  navigator.clipboard.writeText(text || '').then(() => {
+    const orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 1500);
+  });
+}
+
+function copyField(ci, col, btn) {
+  copyText(contacts[ci].data[col] || '', btn);
+}
+
+function backupJSON() {
+  const data = { contacts, columns };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'outreach_backup_' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function restoreJSON(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.contacts || !data.columns) throw new Error('Invalid backup file.');
+      if (contacts.length > 0 && !confirm('This will replace your current data. Continue?')) return;
+      contacts = data.contacts;
+      columns = data.columns;
+      save();
+      render();
+    } catch(err) {
+      alert('Could not restore: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  input.value = '';
+}
+
+function exportCSV() {
+  if (contacts.length === 0) { alert('No contacts to export.'); return; }
+
+  // find max sequence count across all contacts
+  const maxSeq = Math.max(...contacts.map(c => c.sequences.length));
+
+  // build header row
+  const seqCols = [];
+  for (let i = 1; i <= maxSeq; i++) {
+    seqCols.push(`subject${i}`, `email${i}`);
+  }
+  const headers = [...columns, 'outreach_status', ...seqCols];
+
+  function csvCell(val) {
+    const s = String(val ?? '');
+    if (s.includes(',') || s.includes('"') || s.includes('\n')) {
+      return '"' + s.replace(/"/g, '""') + '"';
+    }
+    return s;
+  }
+
+  const rows = contacts.map(c => {
+    const base = columns.map(col => csvCell(c.data[col] || ''));
+    base.push(csvCell(c.status));
+    for (let i = 0; i < maxSeq; i++) {
+      const seq = c.sequences[i];
+      base.push(csvCell(seq ? seq.subject : ''), csvCell(seq ? seq.body : ''));
+    }
+    return base.join(',');
+  });
+
+  const csv = [headers.map(csvCell).join(','), ...rows].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'outreach_sequences.csv';
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 render();
