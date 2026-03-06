@@ -537,7 +537,9 @@
 <div class="sheets-bar">
   <label>Sheets Script URL</label>
   <input type="text" id="sheetsUrl" placeholder="Paste your Apps Script web app URL here..."
-    value="" oninput="localStorage.setItem('sheets_script_url', this.value)">
+    value="" oninput="localStorage.setItem('sheets_script_url', this.value)" style="flex:2">
+  <input type="text" id="sheetsName" placeholder="Sheet name (e.g. SF 1840 10th Ave)"
+    value="" oninput="localStorage.setItem('sheets_sheet_name', this.value)" style="flex:1">
   <span class="sheets-status" id="sheetsStatus"></span>
 </div>
 
@@ -973,9 +975,11 @@ async function syncToSheets(ci) {
   const statusEl = document.getElementById('sheetsStatus');
   if (statusEl) { statusEl.textContent = 'Syncing...'; statusEl.className = 'sheets-status syncing'; }
 
+  const sheetName = (localStorage.getItem('sheets_sheet_name') || '').trim();
   const payload = {
     company:   c.data[columns[companyIdx]] || '',
     phone:     c.data[columns[phoneIdx]]   || '',
+    sheetName: sheetName,
     sequences: c.sequences.map((s, i) => ({
       index:   i + 1,
       subject: s.subject || '',
@@ -1192,6 +1196,10 @@ render();
 const savedSheetsUrl = localStorage.getItem('sheets_script_url') || '';
 const sheetsUrlInput = document.getElementById('sheetsUrl');
 if (sheetsUrlInput && savedSheetsUrl) sheetsUrlInput.value = savedSheetsUrl;
+
+const savedSheetName = localStorage.getItem('sheets_sheet_name') || '';
+const sheetsNameInput = document.getElementById('sheetsName');
+if (sheetsNameInput && savedSheetName) sheetsNameInput.value = savedSheetName;
 </script>
 </body>
 </html>

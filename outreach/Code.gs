@@ -6,7 +6,11 @@ function doPost(e) {
   try {
     const raw = e.parameter.data || e.postData.contents || '{}';
     const data = JSON.parse(raw);
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = data.sheetName
+      ? ss.getSheetByName(data.sheetName)
+      : ss.getActiveSheet();
+    if (!sheet) return respond({ error: `Sheet "${data.sheetName}" not found.` });
     const lastCol = sheet.getLastColumn();
     const lastRow = sheet.getLastRow();
 
