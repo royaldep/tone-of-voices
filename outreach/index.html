@@ -335,6 +335,8 @@
   }
   .copy-btn:hover { color: #aaa; background: #2a2a32; }
   .copy-btn.copied { color: #4caf7d; }
+  .link-btn { color: #6c8fff; font-size: 0.8rem; }
+  .link-btn:hover { color: #99b3ff; background: #6c8fff18; }
   .field-group input, .field-group select {
     width: 100%;
     background: #1e1e24;
@@ -487,11 +489,57 @@
     color: #444;
     font-size: 0.9rem;
   }
+
+  .sheets-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #1a1a1f;
+    border: 1px solid #222;
+    border-radius: 10px;
+    padding: 10px 16px;
+    margin-bottom: 18px;
+  }
+  .sheets-bar label {
+    font-size: 0.72rem;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+  .sheets-bar input {
+    flex: 1;
+    background: #141416;
+    border: 1px solid #2a2a33;
+    border-radius: 6px;
+    padding: 6px 10px;
+    color: #ccc;
+    font-size: 0.82rem;
+    outline: none;
+  }
+  .sheets-bar input:focus { border-color: #6c63ff88; }
+  .sheets-status {
+    font-size: 0.75rem;
+    white-space: nowrap;
+    min-width: 60px;
+    text-align: right;
+  }
+  .sheets-status.ok  { color: #4caf7d; }
+  .sheets-status.err { color: #e05c5c; }
+  .sheets-status.syncing { color: #888; }
 </style>
 </head>
 <body>
 
 <h1>📬 Outreach Sequences</h1>
+
+<!-- Google Sheets sync -->
+<div class="sheets-bar">
+  <label>Sheets Script URL</label>
+  <input type="text" id="sheetsUrl" placeholder="Paste your Apps Script web app URL here..."
+    value="" oninput="localStorage.setItem('sheets_script_url', this.value)">
+  <span class="sheets-status" id="sheetsStatus"></span>
+</div>
 
 <!-- Paste zone -->
 <div class="paste-zone">
@@ -815,16 +863,22 @@ function render() {
       </div>
     `).join('');
 
-    const fieldInputs = columns.map(col => `
+    const fieldInputs = columns.map(col => {
+      const val = c.data[col] || '';
+      const isLink = /^https?:\/\//i.test(val);
+      return `
       <div class="field-group">
         <div class="field-label-row">
           <label>${col}</label>
-          <button class="copy-btn" onclick="copyField(${ci},'${escHtml(col)}',this)">Copy</button>
+          <div style="display:flex;gap:3px;align-items:center">
+            ${isLink ? `<button class="copy-btn link-btn" onclick="openLink(${ci},'${escHtml(col)}')" title="Open link">↗</button>` : ''}
+            <button class="copy-btn" onclick="copyField(${ci},'${escHtml(col)}',this)">Copy</button>
+          </div>
         </div>
-        <input type="text" value="${escHtml(c.data[col] || '')}"
+        <input type="text" value="${escHtml(val)}"
           oninput="contacts[${ci}].data['${escHtml(col)}']=this.value${col.toLowerCase().includes('email') ? `;syncEmail(${ci})` : ''}">
-      </div>
-    `).join('');
+      </div>`;
+    }).join('');
 
     const rowNum = ci + 1;
     const checked = selectedIds.has(c.id) ? 'checked' : '';
@@ -903,6 +957,45 @@ function saveRow(ci) {
   rerenderRow(ci);
   const flash = document.getElementById('flash-' + ci);
   if (flash) { flash.classList.add('show'); setTimeout(() => flash.classList.remove('show'), 1800); }
+  syncToSheets(ci);
+}
+
+async function syncToSheets(ci) {
+  const url = (localStorage.getItem('sheets_script_url') || '').trim();
+  if (!url) return;
+
+  const c = contacts[ci];
+  const companyIdx = columns.findIndex(col => col.toLowerCase().includes('company'));
+  const phoneIdx   = columns.findIndex(col => col.toLowerCase().includes('phone'));
+
+  if (companyIdx === -1 || phoneIdx === -1) return;
+
+  const statusEl = document.getElementById('sheetsStatus');
+  if (statusEl) { statusEl.textContent = 'Syncing...'; statusEl.className = 'sheets-status syncing'; }
+
+  const payload = {
+    company:   c.data[columns[companyIdx]] || '',
+    phone:     c.data[columns[phoneIdx]]   || '',
+    sequences: c.sequences.map((s, i) => ({
+      index:   i + 1,
+      subject: s.subject || '',
+      body:    s.body    || ''
+    }))
+  };
+
+  try {
+    await fetch(url, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(payload)
+    });
+    if (statusEl) { statusEl.textContent = 'Synced ✓'; statusEl.className = 'sheets-status ok'; }
+    setTimeout(() => { if (statusEl) { statusEl.textContent = ''; statusEl.className = 'sheets-status'; } }, 3000);
+  } catch (err) {
+    if (statusEl) { statusEl.textContent = 'Sync failed'; statusEl.className = 'sheets-status err'; }
+    console.error('Sheets sync error:', err);
+  }
 }
 
 function addColumn() {
@@ -1015,6 +1108,11 @@ function copyField(ci, col, btn) {
   copyText(contacts[ci].data[col] || '', btn);
 }
 
+function openLink(ci, col) {
+  const url = contacts[ci].data[col] || '';
+  if (url) window.open(url, '_blank', 'noopener');
+}
+
 function backupJSON() {
   const data = { contacts, columns };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -1089,6 +1187,11 @@ function exportCSV() {
 }
 
 render();
+
+// Restore saved Sheets URL
+const savedSheetsUrl = localStorage.getItem('sheets_script_url') || '';
+const sheetsUrlInput = document.getElementById('sheetsUrl');
+if (sheetsUrlInput && savedSheetsUrl) sheetsUrlInput.value = savedSheetsUrl;
 </script>
 </body>
 </html>
