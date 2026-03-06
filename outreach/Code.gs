@@ -110,7 +110,7 @@ function createDrafts(data) {
     const subject = seq.subject || '';
     const body    = seq.body || '';
     if (!to && !subject && !body) return;
-    Utilities.sleep(i * 1500); // 1.5s apart so Gmail orders them correctly
+    Utilities.sleep(i * 500); // 500ms apart so Gmail orders them correctly
     GmailApp.createDraft(to, subject, body);
     created.push(i + 1);
   });
