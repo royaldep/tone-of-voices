@@ -1147,8 +1147,8 @@ async function createDrafts(ci) {
   };
 
   try {
-    const form = new URLSearchParams({ data: JSON.stringify(payload) });
-    await fetch(url, { method: 'POST', mode: 'no-cors', body: form });
+    const getUrl = url + '?data=' + encodeURIComponent(JSON.stringify(payload));
+    await fetch(getUrl, { method: 'GET', mode: 'no-cors' });
     if (btn) { btn.textContent = 'Drafts Created ✓'; btn.style.color = '#4caf7d'; }
     setTimeout(() => {
       if (btn) { btn.textContent = 'Create Drafts'; btn.disabled = false; btn.style.color = ''; }

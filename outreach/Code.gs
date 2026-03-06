@@ -2,6 +2,19 @@
 // Deploy as: Execute as "Me", Who has access "Anyone"
 // Then paste the Web App URL into the outreach tool's Sheets URL field.
 
+function doGet(e) {
+  try {
+    const raw = (e.parameter && e.parameter.data) ? e.parameter.data : '{}';
+    const data = JSON.parse(raw);
+    if (data.action === 'createDrafts') {
+      return createDrafts(data);
+    }
+    return respond({ error: 'Unknown action' });
+  } catch (err) {
+    return respond({ error: err.toString() });
+  }
+}
+
 function doPost(e) {
   try {
     const raw = e.parameter.data || e.postData.contents || '{}';
