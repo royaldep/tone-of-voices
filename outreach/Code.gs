@@ -109,7 +109,8 @@ function createDrafts(data) {
     const to      = seq.to || '';
     const subject = seq.subject || '';
     const body    = seq.body || '';
-    if (!to && !subject && !body) return; // skip fully empty sequences
+    if (!to && !subject && !body) return;
+    Utilities.sleep(i * 1500); // 1.5s apart so Gmail orders them correctly
     GmailApp.createDraft(to, subject, body);
     created.push(i + 1);
   });
