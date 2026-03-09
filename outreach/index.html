@@ -1027,7 +1027,7 @@ function render() {
           ${fieldInputs}
           <div class="field-group">
             <label>Status</label>
-            <select onchange="contacts[${ci}].status=this.value;rerenderRow(${ci})">
+            <select onchange="contacts[${ci}].status=this.value;rerenderRow(${ci});scheduleSave()">
               ${['not-started','in-progress','sent','replied'].map(s =>
                 `<option value="${s}" ${c.status===s?'selected':''}>${statusLabel(s)}</option>`
               ).join('')}
