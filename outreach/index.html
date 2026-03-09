@@ -655,7 +655,10 @@
 
 <!-- Toolbar -->
 <div class="toolbar">
-  <span class="row-count" id="rowCount">0 contacts</span>
+  <div style="display:flex;align-items:center;gap:10px">
+    <span class="row-count" id="rowCount">0 contacts</span>
+    <span id="autoSaveIndicator" style="font-size:0.72rem;color:#4caf7d;opacity:0;transition:opacity 0.4s;">Auto-saved</span>
+  </div>
   <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
     <div style="display:flex;gap:6px;align-items:center">
       <input type="text" id="newColumnName" class="col-input" placeholder="New column"
@@ -688,6 +691,20 @@ let columns = JSON.parse(localStorage.getItem('outreach_columns') || '["Name","E
 let selectedIds = new Set();
 let dragColIndex = null;
 let opensData = [];
+let autoSaveTimer = null;
+
+function scheduleSave() {
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer = setTimeout(() => {
+    save();
+    const indicator = document.getElementById('autoSaveIndicator');
+    if (indicator) {
+      indicator.textContent = 'Auto-saved';
+      indicator.style.opacity = '1';
+      setTimeout(() => { indicator.style.opacity = '0'; }, 1500);
+    }
+  }, 2000);
+}
 
 function save() {
   localStorage.setItem('outreach_contacts', JSON.stringify(contacts));
@@ -958,10 +975,10 @@ function render() {
         </div>
         <div class="email-box-subject">
           <input type="text" placeholder="Subject line..." value="${escHtml(seq.subject)}"
-            oninput="contacts[${ci}].sequences[${si}].subject=this.value">
+            oninput="contacts[${ci}].sequences[${si}].subject=this.value;scheduleSave()">
         </div>
         <textarea placeholder="Write your email body here..."
-          oninput="contacts[${ci}].sequences[${si}].body=this.value">${escHtml(seq.body)}</textarea>
+          oninput="contacts[${ci}].sequences[${si}].body=this.value;scheduleSave()">${escHtml(seq.body)}</textarea>
       </div>
     `).join('');
 
@@ -978,7 +995,7 @@ function render() {
           </div>
         </div>
         <input type="text" value="${escHtml(val)}"
-          oninput="contacts[${ci}].data['${escHtml(col)}']=this.value${col.toLowerCase().includes('email') ? `;syncEmail(${ci})` : ''}">
+          oninput="contacts[${ci}].data['${escHtml(col)}']=this.value${col.toLowerCase().includes('email') ? `;syncEmail(${ci})` : ''};scheduleSave()">
       </div>`;
     }).join('');
 
