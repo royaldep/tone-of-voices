@@ -505,6 +505,78 @@
     font-size: 0.9rem;
   }
 
+  /* Analytics */
+  .analytics-section {
+    background: #1a1a1f;
+    border: 1px solid #222;
+    border-radius: 10px;
+    margin-bottom: 18px;
+    overflow: hidden;
+  }
+  .analytics-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .analytics-header:hover { background: #1f1f26; }
+  .analytics-title {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #555;
+    font-weight: 600;
+  }
+  .analytics-toggle { color: #444; font-size: 0.7rem; transition: transform 0.2s; }
+  .analytics-section.open .analytics-toggle { transform: rotate(180deg); color: #6c63ff; }
+  .analytics-body { display: none; padding: 4px 16px 16px; }
+  .analytics-section.open .analytics-body { display: block; }
+  .analytics-stats {
+    display: flex;
+    gap: 32px;
+    margin-bottom: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid #1e1e22;
+  }
+  .stat-box { text-align: left; }
+  .stat-value { font-size: 1.5rem; font-weight: 600; color: #fff; line-height: 1; }
+  .stat-label { font-size: 0.68rem; color: #555; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+  .seq-bars { display: flex; flex-direction: column; gap: 8px; }
+  .seq-bar-row { display: flex; align-items: center; gap: 10px; }
+  .seq-bar-label { font-size: 0.75rem; color: #666; width: 54px; flex-shrink: 0; }
+  .seq-bar-track { flex: 1; background: #1e1e24; border-radius: 3px; height: 7px; }
+  .seq-bar-fill { height: 7px; border-radius: 3px; background: #4caf7d; transition: width 0.4s; }
+  .seq-bar-count { font-size: 0.73rem; color: #555; width: 48px; text-align: right; flex-shrink: 0; }
+
+  /* Email dot opened state */
+  .email-dot.opened { background: #4caf7d; }
+
+  /* Per-row open timeline */
+  .open-timeline {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid #1e1e22;
+  }
+  .open-timeline-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #555;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .timeline-rows { display: flex; flex-direction: column; gap: 6px; }
+  .timeline-row { display: flex; align-items: center; gap: 10px; font-size: 0.82rem; }
+  .timeline-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: #2a2a32; }
+  .timeline-dot.opened { background: #4caf7d; }
+  .timeline-dot.filled { background: #6c63ff; }
+  .timeline-seq { color: #555; font-size: 0.75rem; width: 52px; flex-shrink: 0; }
+  .timeline-status { color: #ccc; flex: 1; }
+  .timeline-status.opened { color: #4caf7d; }
+  .timeline-time { color: #444; font-size: 0.73rem; }
+
   .sheets-bar {
     display: flex;
     align-items: center;
@@ -558,6 +630,17 @@
   <span class="sheets-status" id="sheetsStatus"></span>
 </div>
 
+<!-- Analytics -->
+<div class="analytics-section" id="analyticsSection" style="display:none">
+  <div class="analytics-header" onclick="this.parentElement.classList.toggle('open')">
+    <span class="analytics-title">Open Tracking</span>
+    <span class="analytics-toggle">▼</span>
+  </div>
+  <div class="analytics-body">
+    <div id="analyticsContent"></div>
+  </div>
+</div>
+
 <!-- Paste zone -->
 <div class="paste-zone">
   <label>Paste from Google Sheets (include header row) or import CSV</label>
@@ -604,6 +687,7 @@ let contacts = JSON.parse(localStorage.getItem('outreach_contacts') || '[]');
 let columns = JSON.parse(localStorage.getItem('outreach_columns') || '["Name","Email","Company","Status"]');
 let selectedIds = new Set();
 let dragColIndex = null;
+let opensData = [];
 
 function save() {
   localStorage.setItem('outreach_contacts', JSON.stringify(contacts));
@@ -910,8 +994,13 @@ function render() {
           <span class="status-badge ${statusClass(c.status)}">${statusLabel(c.status)}</span>
         </div>
         <div class="cell">
-          <div class="email-dots" title="${c.sequences.filter(s=>s.subject||s.body).length} of ${c.sequences.length} emails filled">
-            ${c.sequences.map(s => `<div class="email-dot ${s.subject && s.body ? 'filled' : s.subject || s.body ? 'partial' : ''}"></div>`).join('')}
+          <div class="email-dots">
+            ${c.sequences.map((s, si) => {
+              const op = getContactOpen(ci, si);
+              const cls = op && op.openCount > 0 ? 'opened' : s.subject && s.body ? 'filled' : s.subject || s.body ? 'partial' : '';
+              const title = op && op.openCount > 0 ? `Email ${si+1}: opened ${op.openCount}×` : s.subject || s.body ? `Email ${si+1}: filled` : `Email ${si+1}: empty`;
+              return `<div class="email-dot ${cls}" title="${title}"></div>`;
+            }).join('')}
           </div>
         </div>
         <div class="expand-icon">▼</div>
@@ -933,6 +1022,7 @@ function render() {
           <button class="btn-add-email" onclick="addSeq(${ci})">+ Add Email</button>
         </div>
         <div class="email-boxes">${seqHTML}</div>
+        ${buildTimeline(ci, c)}
         <div class="row-actions">
           <span class="save-flash" id="flash-${ci}">Saved ✓</span>
           <button class="btn-delete-row" onclick="deleteRow(${ci})">Delete</button>
@@ -1137,8 +1227,14 @@ async function createDrafts(ci) {
   const btn = document.getElementById('drafts-' + ci);
   if (btn) { btn.textContent = 'Creating...'; btn.disabled = true; }
 
+  const companyIdx = columns.findIndex(col => col.toLowerCase().includes('company'));
+  const phoneIdx   = columns.findIndex(col => col.toLowerCase().includes('phone'));
+
   const payload = {
-    action: 'createDrafts',
+    action:    'createDrafts',
+    scriptUrl: url,
+    company:   companyIdx >= 0 ? c.data[columns[companyIdx]] || '' : '',
+    phone:     phoneIdx   >= 0 ? c.data[columns[phoneIdx]]   || '' : '',
     sequences: c.sequences.map(s => ({
       to:      s.to || getEmail(c) || '',
       subject: s.subject || '',
@@ -1150,8 +1246,9 @@ async function createDrafts(ci) {
     const getUrl = url + '?data=' + encodeURIComponent(JSON.stringify(payload));
     await fetch(getUrl, { method: 'GET', mode: 'no-cors' });
     if (btn) { btn.textContent = 'Drafts Created ✓'; btn.style.color = '#4caf7d'; }
-    setTimeout(() => {
+    setTimeout(async () => {
       if (btn) { btn.textContent = 'Create Drafts'; btn.disabled = false; btn.style.color = ''; }
+      await fetchOpens(); // refresh open data after creating drafts
     }, 3000);
   } catch (err) {
     if (btn) { btn.textContent = 'Failed'; btn.style.color = '#e05c5c'; }
@@ -1250,6 +1347,122 @@ function exportCSV() {
   URL.revokeObjectURL(url);
 }
 
+// --- Open tracking helpers ---
+
+function getContactOpen(ci, si) {
+  if (!opensData.length) return null;
+  const c = contacts[ci];
+  const companyIdx = columns.findIndex(col => col.toLowerCase().includes('company'));
+  const phoneIdx   = columns.findIndex(col => col.toLowerCase().includes('phone'));
+  if (companyIdx === -1 || phoneIdx === -1) return null;
+  const company = (c.data[columns[companyIdx]] || '').toLowerCase().trim();
+  const phone   = (c.data[columns[phoneIdx]]   || '').toLowerCase().trim();
+  return opensData.find(o =>
+    o.company.toLowerCase().trim() === company &&
+    o.phone.toLowerCase().trim()   === phone &&
+    Number(o.seqIndex) === si + 1
+  ) || null;
+}
+
+function buildTimeline(ci, c) {
+  const rows = c.sequences.map((seq, si) => {
+    const op = getContactOpen(ci, si);
+    const hasContent = seq.subject || seq.body;
+    let dotCls = 'empty', statusText = 'Empty', timeText = '';
+    if (op && op.openCount > 0) {
+      dotCls = 'opened';
+      statusText = `Opened ${op.openCount}×`;
+      if (op.lastOpenedAt) {
+        const d = new Date(op.lastOpenedAt);
+        timeText = `Last: ${d.toLocaleDateString()} ${d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`;
+      }
+    } else if (op) {
+      dotCls = 'filled';
+      statusText = hasContent ? 'Draft created — not opened yet' : 'Draft created';
+    } else if (hasContent) {
+      dotCls = 'filled';
+      statusText = 'Filled — draft not created yet';
+    }
+    return `
+      <div class="timeline-row">
+        <div class="timeline-dot ${dotCls}"></div>
+        <span class="timeline-seq">Email ${si + 1}</span>
+        <span class="timeline-status ${dotCls === 'opened' ? 'opened' : ''}">${statusText}</span>
+        <span class="timeline-time">${timeText}</span>
+      </div>`;
+  }).join('');
+
+  return `
+    <div class="open-timeline">
+      <div class="open-timeline-label">Open Tracking</div>
+      <div class="timeline-rows">${rows}</div>
+    </div>`;
+}
+
+async function fetchOpens() {
+  const url = (localStorage.getItem('sheets_script_url') || '').trim();
+  if (!url) return;
+  try {
+    const res = await fetch(url + '?action=getOpens');
+    const json = await res.json();
+    opensData = json.opens || [];
+    renderAnalytics();
+    render();
+  } catch(e) {
+    console.warn('Could not fetch opens data:', e);
+  }
+}
+
+function renderAnalytics() {
+  const section = document.getElementById('analyticsSection');
+  const content = document.getElementById('analyticsContent');
+  if (!section || !content) return;
+
+  if (!opensData.length) { section.style.display = 'none'; return; }
+  section.style.display = 'block';
+
+  const total  = opensData.length;
+  const opened = opensData.filter(o => o.openCount > 0).length;
+  const rate   = total > 0 ? Math.round((opened / total) * 100) : 0;
+
+  const seqStats = {};
+  opensData.forEach(o => {
+    const idx = Number(o.seqIndex);
+    if (!seqStats[idx]) seqStats[idx] = { sent: 0, opens: 0 };
+    seqStats[idx].sent++;
+    if (o.openCount > 0) seqStats[idx].opens++;
+  });
+  const maxOpens = Math.max(...Object.values(seqStats).map(s => s.opens), 1);
+
+  const barsHTML = Object.keys(seqStats).sort((a,b) => a-b).map(idx => {
+    const s = seqStats[idx];
+    const pct = Math.round((s.opens / maxOpens) * 100);
+    return `
+      <div class="seq-bar-row">
+        <span class="seq-bar-label">Email ${idx}</span>
+        <div class="seq-bar-track"><div class="seq-bar-fill" style="width:${pct}%"></div></div>
+        <span class="seq-bar-count">${s.opens} / ${s.sent} opened</span>
+      </div>`;
+  }).join('');
+
+  content.innerHTML = `
+    <div class="analytics-stats">
+      <div class="stat-box">
+        <div class="stat-value">${total}</div>
+        <div class="stat-label">Drafts sent</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" style="color:#4caf7d">${opened}</div>
+        <div class="stat-label">Opened</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value">${rate}%</div>
+        <div class="stat-label">Open rate</div>
+      </div>
+    </div>
+    <div class="seq-bars">${barsHTML}</div>`;
+}
+
 render();
 
 // Restore saved Sheets URL
@@ -1260,6 +1473,10 @@ if (sheetsUrlInput && savedSheetsUrl) sheetsUrlInput.value = savedSheetsUrl;
 const savedSheetName = localStorage.getItem('sheets_sheet_name') || '';
 const sheetsNameInput = document.getElementById('sheetsName');
 if (sheetsNameInput && savedSheetName) sheetsNameInput.value = savedSheetName;
+
+// Fetch opens on load and auto-refresh every 60s
+fetchOpens();
+setInterval(fetchOpens, 60000);
 </script>
 </body>
 </html>
