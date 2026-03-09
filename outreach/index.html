@@ -1424,7 +1424,9 @@ async function fetchOpens() {
     const json = await res.json();
     opensData = json.opens || [];
     renderAnalytics();
+    const openIds = [...document.querySelectorAll('.row-item.open')].map(el => el.id);
     render();
+    openIds.forEach(id => document.getElementById(id)?.classList.add('open'));
   } catch(e) {
     console.warn('Could not fetch opens data:', e);
   }
