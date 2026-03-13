@@ -851,11 +851,16 @@ function escHtmlAttr(str) {
   return String(str).replace(/'/g, '&#39;').replace(/"/g, '&quot;');
 }
 
+let lastTmplFocus = null;
+
+document.addEventListener('focusin', e => {
+  if (e.target && e.target.closest('#tmplSeqList')) {
+    lastTmplFocus = e.target;
+  }
+});
+
 function insertVar(varName) {
-  const active = document.activeElement;
-  const inTemplate = active && active.closest('#tmplSeqList');
-  const fallback = document.querySelector('#tmplSeqList .tmpl-textarea');
-  const target = inTemplate ? active : fallback;
+  const target = lastTmplFocus || document.querySelector('#tmplSeqList .tmpl-textarea');
   if (!target) return;
   const token = '{{' + varName + '}}';
   const start = target.selectionStart;
