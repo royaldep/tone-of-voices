@@ -18,10 +18,12 @@
 - For outreach emails, Stacy likes a slightly more polished and softened tone than X posts
 - Good email phrasing: I’ve been looking into..., We’ve been working on..., At the moment, we’re offering..., If it sounds useful..., If that sounds helpful..., send it over for your thoughts, no pressure if it doesn’t feel like the right fit
 - Email tone should be friendly and credible, smooth and specific, polished but not stiff
-- Prefer softer, more polished wording in email: tangible over concrete, unavailable over can't, potential leads over leads when helpful, tied up over busy when it reads better, take care of over handle, ongoing management over keep it running, another task on your plate over one more thing to manage, approach it over do it
+- Moving forward, email edits should not just smooth sentences. They should translate blunt utility language into softer, more polished, more considered language
+- Preferred email transformations: concrete -> tangible, answer calls -> pick up calls, can't -> unavailable, book viewings -> schedule viewings, leads -> potential leads when helpful, busy -> tied up, main idea -> goal is simply, handle -> take care of, keep it running -> ongoing management, another thing to manage -> another task on your plate, do it -> approach it
 - Use soft CTAs like: If you’re interested, just reply yes and I’ll send over a few details on how it would work / If that sounds helpful, just reply yes and I’ll send over a few details on how we’d approach it
 - Keep examples flowing naturally in one sentence rather than choppy fragments
 - In this email lane, goal/idea language can work when it sounds calm and practical: The goal is simply to...
+- When editing for this tone, prefer the more premium, softened construction if it still sounds natural
 
 ## Tweet Writing Notes (Fountain of Scale)
 
