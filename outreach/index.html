@@ -689,6 +689,21 @@
     padding: 6px 12px; font-size: 0.8rem; cursor: pointer;
   }
   .btn-tmpl-delete:hover { color: #e05c5c; border-color: #e05c5c44; }
+  .tmpl-seq-block {
+    background: #111;
+    border: 1px solid #2a2a33;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+  }
+  .tmpl-seq-num {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #6c63ff;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 7px;
+  }
 </style>
 </head>
 <body>
@@ -730,20 +745,38 @@
       <button class="btn-tmpl-delete" onclick="deleteTemplate()">Delete</button>
     </div>
     <input type="text" class="tmpl-name-input" id="tmplName" placeholder="Template name...">
-    <input type="text" class="tmpl-subject" id="tmplSubject" placeholder="Subject line... use {{ColumnName}} for variables">
-    <textarea class="tmpl-textarea" id="tmplBody" placeholder="Email body... use {{ColumnName}} for variables&#10;e.g. Hi {{Name}}, I noticed your listing at {{Company}}..."></textarea>
     <div class="tmpl-vars" id="tmplVars">
       <span class="tmpl-var-label">Insert variable:</span>
     </div>
-    <div class="tmpl-apply-row">
-      <span class="tmpl-seq-label">Apply to Email #</span>
-      <input type="number" class="tmpl-seq-input" id="tmplSeqIndex" value="1" min="1" max="10">
+    <div id="tmplSeqList">
+      <div class="tmpl-seq-block">
+        <div class="tmpl-seq-num">Email 1</div>
+        <input type="text" class="tmpl-subject" data-seq="0" placeholder="Subject...">
+        <textarea class="tmpl-textarea" data-seq="0" placeholder="Body... e.g. Hi {{Name}}, I work with sellers in {{City}}..."></textarea>
+      </div>
+      <div class="tmpl-seq-block">
+        <div class="tmpl-seq-num">Email 2</div>
+        <input type="text" class="tmpl-subject" data-seq="1" placeholder="Subject...">
+        <textarea class="tmpl-textarea" data-seq="1" placeholder="Body..."></textarea>
+      </div>
+      <div class="tmpl-seq-block">
+        <div class="tmpl-seq-num">Email 3</div>
+        <input type="text" class="tmpl-subject" data-seq="2" placeholder="Subject...">
+        <textarea class="tmpl-textarea" data-seq="2" placeholder="Body..."></textarea>
+      </div>
+      <div class="tmpl-seq-block">
+        <div class="tmpl-seq-num">Email 4</div>
+        <input type="text" class="tmpl-subject" data-seq="3" placeholder="Subject...">
+        <textarea class="tmpl-textarea" data-seq="3" placeholder="Body..."></textarea>
+      </div>
+    </div>
+    <div class="tmpl-apply-row" style="margin-top:10px">
       <label class="tmpl-checkbox-label">
-        <input type="checkbox" id="tmplOnlySelected"> Selected only
+        <input type="checkbox" id="tmplOnlySelected"> Selected contacts only
       </label>
       <div style="flex:1"></div>
       <button class="btn-tmpl-save" onclick="saveTemplate()">Save Template</button>
-      <button class="btn-tmpl-apply" onclick="applyTemplate()">Apply to Contacts</button>
+      <button class="btn-tmpl-apply" onclick="applyTemplate()">Apply All to Contacts</button>
     </div>
   </div>
 </div>
@@ -819,10 +852,11 @@ function escHtmlAttr(str) {
 }
 
 function insertVar(varName) {
-  const bodyEl = document.getElementById('tmplBody');
-  const subjectEl = document.getElementById('tmplSubject');
   const active = document.activeElement;
-  const target = (active === subjectEl || active === bodyEl) ? active : bodyEl;
+  const inTemplate = active && active.closest('#tmplSeqList');
+  const fallback = document.querySelector('#tmplSeqList .tmpl-textarea');
+  const target = inTemplate ? active : fallback;
+  if (!target) return;
   const token = '{{' + varName + '}}';
   const start = target.selectionStart;
   const end = target.selectionEnd;
@@ -841,16 +875,32 @@ function renderTemplateDropdown() {
     ).join('');
 }
 
+function getTmplSequences() {
+  const subjects = document.querySelectorAll('#tmplSeqList .tmpl-subject');
+  const bodies = document.querySelectorAll('#tmplSeqList .tmpl-textarea');
+  const seqs = [];
+  subjects.forEach((el, i) => {
+    seqs.push({ subject: el.value, body: bodies[i] ? bodies[i].value : '' });
+  });
+  return seqs;
+}
+
+function setTmplSequences(seqs) {
+  const subjects = document.querySelectorAll('#tmplSeqList .tmpl-subject');
+  const bodies = document.querySelectorAll('#tmplSeqList .tmpl-textarea');
+  subjects.forEach((el, i) => { el.value = seqs[i] ? seqs[i].subject || '' : ''; });
+  bodies.forEach((el, i) => { el.value = seqs[i] ? seqs[i].body || '' : ''; });
+}
+
 function saveTemplate() {
   const name = document.getElementById('tmplName').value.trim();
   if (!name) { alert('Enter a template name first.'); return; }
-  const subject = document.getElementById('tmplSubject').value;
-  const body = document.getElementById('tmplBody').value;
+  const sequences = getTmplSequences();
   const existing = templates.findIndex(t => t.name === name);
   if (existing >= 0) {
-    templates[existing] = { ...templates[existing], subject, body };
+    templates[existing] = { ...templates[existing], sequences };
   } else {
-    templates.push({ id: Date.now(), name, subject, body });
+    templates.push({ id: Date.now(), name, sequences });
   }
   saveTemplates();
   renderTemplateDropdown();
@@ -865,8 +915,12 @@ function loadTemplate() {
   const t = templates.find(t => t.id === id);
   if (!t) return;
   document.getElementById('tmplName').value = t.name;
-  document.getElementById('tmplSubject').value = t.subject || '';
-  document.getElementById('tmplBody').value = t.body || '';
+  // support old single-email format
+  if (t.sequences) {
+    setTmplSequences(t.sequences);
+  } else {
+    setTmplSequences([{ subject: t.subject || '', body: t.body || '' }]);
+  }
 }
 
 function deleteTemplate() {
@@ -878,15 +932,13 @@ function deleteTemplate() {
   saveTemplates();
   renderTemplateDropdown();
   document.getElementById('tmplName').value = '';
-  document.getElementById('tmplSubject').value = '';
-  document.getElementById('tmplBody').value = '';
+  setTmplSequences([]);
 }
 
 function applyTemplate() {
-  const subject = document.getElementById('tmplSubject').value;
-  const body = document.getElementById('tmplBody').value;
-  if (!subject && !body) { alert('Template subject and body are both empty.'); return; }
-  const seqIdx = Math.max(0, (parseInt(document.getElementById('tmplSeqIndex').value, 10) || 1) - 1);
+  const seqs = getTmplSequences();
+  const hasContent = seqs.some(s => s.subject || s.body);
+  if (!hasContent) { alert('All email slots are empty — fill in at least one subject or body.'); return; }
   const onlySelected = document.getElementById('tmplOnlySelected').checked;
   const targets = onlySelected && selectedIds.size > 0
     ? contacts.filter(c => selectedIds.has(c.id))
@@ -896,18 +948,21 @@ function applyTemplate() {
   const openRows = [...document.querySelectorAll('.row-item.open')].map(el => el.id);
 
   targets.forEach(c => {
-    let s = subject, b = body;
-    columns.forEach(col => {
-      const val = c.data[col] || '';
-      const re = new RegExp('\\{\\{' + col.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\}\\}', 'gi');
-      s = s.replace(re, val);
-      b = b.replace(re, val);
+    seqs.forEach((seq, seqIdx) => {
+      if (!seq.subject && !seq.body) return;
+      let s = seq.subject, b = seq.body;
+      columns.forEach(col => {
+        const val = c.data[col] || '';
+        const re = new RegExp('\\{\\{' + col.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\}\\}', 'gi');
+        s = s.replace(re, val);
+        b = b.replace(re, val);
+      });
+      while (c.sequences.length <= seqIdx) {
+        c.sequences.push({ id: Date.now() + Math.random(), subject: '', body: '', to: getEmail(c) });
+      }
+      c.sequences[seqIdx].subject = s;
+      c.sequences[seqIdx].body = b;
     });
-    while (c.sequences.length <= seqIdx) {
-      c.sequences.push({ id: Date.now() + Math.random(), subject: '', body: '', to: getEmail(c) });
-    }
-    c.sequences[seqIdx].subject = s;
-    c.sequences[seqIdx].body = b;
   });
 
   save();
