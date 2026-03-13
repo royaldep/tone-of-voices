@@ -614,6 +614,81 @@
   .sheets-status.ok  { color: #4caf7d; }
   .sheets-status.err { color: #e05c5c; }
   .sheets-status.syncing { color: #888; }
+
+  /* Templates */
+  .templates-section {
+    background: #1a1a1f;
+    border: 1px solid #2a2a33;
+    border-radius: 10px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .templates-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .templates-header:hover { background: #1f1f26; }
+  .templates-title { font-size: 0.82rem; font-weight: 600; color: #ccc; }
+  .templates-toggle { font-size: 0.65rem; color: #555; transition: transform 0.2s; }
+  .templates-section.open .templates-toggle { transform: rotate(180deg); }
+  .templates-body { display: none; padding: 0 16px 16px; border-top: 1px solid #222; }
+  .templates-section.open .templates-body { display: block; }
+  .tmpl-row { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
+  .tmpl-select {
+    flex: 1; min-width: 140px;
+    background: #111; border: 1px solid #2a2a33; border-radius: 6px;
+    padding: 6px 10px; color: #ccc; font-size: 0.82rem; outline: none;
+  }
+  .tmpl-name-input {
+    width: 100%; background: #111; border: 1px solid #2a2a33; border-radius: 6px;
+    padding: 6px 10px; color: #ccc; font-size: 0.82rem; outline: none; margin-bottom: 8px;
+  }
+  .tmpl-name-input:focus, .tmpl-select:focus { border-color: #6c63ff88; }
+  .tmpl-subject {
+    width: 100%; background: #111; border: 1px solid #2a2a33; border-radius: 6px;
+    padding: 7px 10px; color: #ccc; font-size: 0.82rem; outline: none; margin-bottom: 8px;
+  }
+  .tmpl-subject:focus { border-color: #6c63ff88; }
+  .tmpl-textarea {
+    width: 100%; background: #111; border: 1px solid #2a2a33; border-radius: 6px;
+    padding: 8px 10px; color: #ccc; font-size: 0.82rem; resize: vertical;
+    min-height: 90px; outline: none; font-family: inherit; margin-bottom: 8px;
+  }
+  .tmpl-textarea:focus { border-color: #6c63ff88; }
+  .tmpl-vars { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; align-items: center; }
+  .tmpl-var-label { font-size: 0.72rem; color: #666; margin-right: 2px; }
+  .tmpl-var-chip {
+    background: #252530; border: 1px solid #333; border-radius: 4px;
+    padding: 3px 8px; font-size: 0.75rem; color: #aaa; cursor: pointer;
+    font-family: monospace; transition: background 0.1s, color 0.1s;
+  }
+  .tmpl-var-chip:hover { background: #2e2e40; color: #c0b8ff; border-color: #555; }
+  .tmpl-apply-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .tmpl-seq-label { font-size: 0.8rem; color: #888; white-space: nowrap; }
+  .tmpl-seq-input {
+    width: 48px; background: #111; border: 1px solid #2a2a33; border-radius: 6px;
+    padding: 5px 8px; color: #ccc; font-size: 0.82rem; outline: none; text-align: center;
+  }
+  .tmpl-checkbox-label { display: flex; align-items: center; gap: 5px; font-size: 0.8rem; color: #888; cursor: pointer; }
+  .btn-tmpl-save {
+    background: #6c63ff; color: #fff; border: none; border-radius: 6px;
+    padding: 6px 14px; font-size: 0.8rem; cursor: pointer; font-weight: 500;
+  }
+  .btn-tmpl-save:hover { background: #5a52e0; }
+  .btn-tmpl-apply {
+    background: #4caf7d; color: #fff; border: none; border-radius: 6px;
+    padding: 6px 14px; font-size: 0.8rem; cursor: pointer; font-weight: 500;
+  }
+  .btn-tmpl-apply:hover { background: #3e9a6d; }
+  .btn-tmpl-delete {
+    background: transparent; color: #666; border: 1px solid #333; border-radius: 6px;
+    padding: 6px 12px; font-size: 0.8rem; cursor: pointer;
+  }
+  .btn-tmpl-delete:hover { color: #e05c5c; border-color: #e05c5c44; }
 </style>
 </head>
 <body>
@@ -638,6 +713,38 @@
   </div>
   <div class="analytics-body">
     <div id="analyticsContent"></div>
+  </div>
+</div>
+
+<!-- Templates -->
+<div class="templates-section" id="templatesSection">
+  <div class="templates-header" onclick="this.parentElement.classList.toggle('open')">
+    <span class="templates-title">Email Templates</span>
+    <span class="templates-toggle">▼</span>
+  </div>
+  <div class="templates-body">
+    <div class="tmpl-row" style="margin-top:12px">
+      <select class="tmpl-select" id="tmplSelect" onchange="loadTemplate()">
+        <option value="">Load saved template...</option>
+      </select>
+      <button class="btn-tmpl-delete" onclick="deleteTemplate()">Delete</button>
+    </div>
+    <input type="text" class="tmpl-name-input" id="tmplName" placeholder="Template name...">
+    <input type="text" class="tmpl-subject" id="tmplSubject" placeholder="Subject line... use {{ColumnName}} for variables">
+    <textarea class="tmpl-textarea" id="tmplBody" placeholder="Email body... use {{ColumnName}} for variables&#10;e.g. Hi {{Name}}, I noticed your listing at {{Company}}..."></textarea>
+    <div class="tmpl-vars" id="tmplVars">
+      <span class="tmpl-var-label">Insert variable:</span>
+    </div>
+    <div class="tmpl-apply-row">
+      <span class="tmpl-seq-label">Apply to Email #</span>
+      <input type="number" class="tmpl-seq-input" id="tmplSeqIndex" value="1" min="1" max="10">
+      <label class="tmpl-checkbox-label">
+        <input type="checkbox" id="tmplOnlySelected"> Selected only
+      </label>
+      <div style="flex:1"></div>
+      <button class="btn-tmpl-save" onclick="saveTemplate()">Save Template</button>
+      <button class="btn-tmpl-apply" onclick="applyTemplate()">Apply to Contacts</button>
+    </div>
   </div>
 </div>
 
@@ -692,6 +799,129 @@ let selectedIds = new Set();
 let dragColIndex = null;
 let opensData = [];
 let autoSaveTimer = null;
+let templates = JSON.parse(localStorage.getItem('outreach_templates') || '[]');
+
+function saveTemplates() {
+  localStorage.setItem('outreach_templates', JSON.stringify(templates));
+}
+
+function renderTemplateVars() {
+  const el = document.getElementById('tmplVars');
+  if (!el) return;
+  el.innerHTML = '<span class="tmpl-var-label">Insert variable:</span>' +
+    columns.map(col =>
+      `<button class="tmpl-var-chip" onclick="insertVar('${escHtmlAttr(col)}')">${escHtml(col)}</button>`
+    ).join('');
+}
+
+function escHtmlAttr(str) {
+  return String(str).replace(/'/g, '&#39;').replace(/"/g, '&quot;');
+}
+
+function insertVar(varName) {
+  const bodyEl = document.getElementById('tmplBody');
+  const subjectEl = document.getElementById('tmplSubject');
+  const active = document.activeElement;
+  const target = (active === subjectEl || active === bodyEl) ? active : bodyEl;
+  const token = '{{' + varName + '}}';
+  const start = target.selectionStart;
+  const end = target.selectionEnd;
+  target.value = target.value.slice(0, start) + token + target.value.slice(end);
+  target.selectionStart = target.selectionEnd = start + token.length;
+  target.focus();
+}
+
+function renderTemplateDropdown() {
+  const sel = document.getElementById('tmplSelect');
+  if (!sel) return;
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">Load saved template...</option>' +
+    templates.map(t =>
+      `<option value="${t.id}" ${String(t.id) === cur ? 'selected' : ''}>${escHtml(t.name)}</option>`
+    ).join('');
+}
+
+function saveTemplate() {
+  const name = document.getElementById('tmplName').value.trim();
+  if (!name) { alert('Enter a template name first.'); return; }
+  const subject = document.getElementById('tmplSubject').value;
+  const body = document.getElementById('tmplBody').value;
+  const existing = templates.findIndex(t => t.name === name);
+  if (existing >= 0) {
+    templates[existing] = { ...templates[existing], subject, body };
+  } else {
+    templates.push({ id: Date.now(), name, subject, body });
+  }
+  saveTemplates();
+  renderTemplateDropdown();
+  const btn = document.querySelector('.btn-tmpl-save');
+  if (btn) { const orig = btn.textContent; btn.textContent = 'Saved ✓'; setTimeout(() => { btn.textContent = orig; }, 1500); }
+}
+
+function loadTemplate() {
+  const sel = document.getElementById('tmplSelect');
+  const id = Number(sel.value);
+  if (!id) return;
+  const t = templates.find(t => t.id === id);
+  if (!t) return;
+  document.getElementById('tmplName').value = t.name;
+  document.getElementById('tmplSubject').value = t.subject || '';
+  document.getElementById('tmplBody').value = t.body || '';
+}
+
+function deleteTemplate() {
+  const sel = document.getElementById('tmplSelect');
+  const id = Number(sel.value);
+  if (!id) { alert('Select a saved template to delete.'); return; }
+  if (!confirm('Delete this template?')) return;
+  templates = templates.filter(t => t.id !== id);
+  saveTemplates();
+  renderTemplateDropdown();
+  document.getElementById('tmplName').value = '';
+  document.getElementById('tmplSubject').value = '';
+  document.getElementById('tmplBody').value = '';
+}
+
+function applyTemplate() {
+  const subject = document.getElementById('tmplSubject').value;
+  const body = document.getElementById('tmplBody').value;
+  if (!subject && !body) { alert('Template subject and body are both empty.'); return; }
+  const seqIdx = Math.max(0, (parseInt(document.getElementById('tmplSeqIndex').value, 10) || 1) - 1);
+  const onlySelected = document.getElementById('tmplOnlySelected').checked;
+  const targets = onlySelected && selectedIds.size > 0
+    ? contacts.filter(c => selectedIds.has(c.id))
+    : contacts;
+  if (targets.length === 0) { alert('No contacts to apply to.'); return; }
+
+  const openRows = [...document.querySelectorAll('.row-item.open')].map(el => el.id);
+
+  targets.forEach(c => {
+    let s = subject, b = body;
+    columns.forEach(col => {
+      const val = c.data[col] || '';
+      const re = new RegExp('\\{\\{' + col.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\}\\}', 'gi');
+      s = s.replace(re, val);
+      b = b.replace(re, val);
+    });
+    while (c.sequences.length <= seqIdx) {
+      c.sequences.push({ id: Date.now() + Math.random(), subject: '', body: '', to: getEmail(c) });
+    }
+    c.sequences[seqIdx].subject = s;
+    c.sequences[seqIdx].body = b;
+  });
+
+  save();
+  render();
+  openRows.forEach(id => document.getElementById(id)?.classList.add('open'));
+
+  const btn = document.querySelector('.btn-tmpl-apply');
+  if (btn) {
+    const orig = btn.textContent;
+    btn.textContent = `Applied to ${targets.length} ✓`;
+    btn.style.background = '#3e9a6d';
+    setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 2000);
+  }
+}
 
 function scheduleSave() {
   clearTimeout(autoSaveTimer);
@@ -1049,6 +1279,9 @@ function render() {
       </div>
     </div>`;
   }).join('');
+
+  renderTemplateVars();
+  renderTemplateDropdown();
 }
 
 function escHtml(str) {
