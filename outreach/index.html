@@ -1400,6 +1400,7 @@ async function syncToSheets(ci) {
   const c = contacts[ci];
   const companyIdx = columns.findIndex(col => col.toLowerCase().includes('company'));
   const phoneIdx   = columns.findIndex(col => col.toLowerCase().includes('phone'));
+  const nameIdx    = columns.findIndex(col => col.toLowerCase() === 'first name');
 
   if (companyIdx === -1 || phoneIdx === -1) return;
 
@@ -1408,6 +1409,7 @@ async function syncToSheets(ci) {
 
   const sheetName = (localStorage.getItem('sheets_sheet_name') || '').trim();
   const payload = {
+    name:      nameIdx >= 0 ? c.data[columns[nameIdx]] || '' : '',
     company:   c.data[columns[companyIdx]] || '',
     phone:     c.data[columns[phoneIdx]]   || '',
     sheetName: sheetName,

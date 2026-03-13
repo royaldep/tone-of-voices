@@ -51,6 +51,7 @@ function doPost(e) {
 
     var companyCol = headers.findIndex(function(h) { return h.toLowerCase().includes('company'); });
     var phoneCol   = headers.findIndex(function(h) { return h.toLowerCase().includes('phone'); });
+    var nameCol    = headers.findIndex(function(h) { return h.toLowerCase() === 'first name'; });
 
     if (companyCol === -1 || phoneCol === -1) {
       return respond({ error: 'Could not find Company or Phone columns in your sheet headers.' });
@@ -58,19 +59,27 @@ function doPost(e) {
 
     var values = lastRow > 1 ? sheet.getRange(2, 1, lastRow - 1, lastCol).getValues() : [];
     var matchRow = -1;
+    var targetName    = (data.name    || '').toLowerCase().trim();
     var targetCompany = (data.company || '').toLowerCase().trim();
     var targetPhone   = (data.phone   || '').toLowerCase().trim();
 
     for (var i = 0; i < values.length; i++) {
-      if (values[i][companyCol].toString().toLowerCase().trim() === targetCompany &&
-          values[i][phoneCol].toString().toLowerCase().trim() === targetPhone) {
+      var rowCompany = values[i][companyCol].toString().toLowerCase().trim();
+      var rowPhone   = values[i][phoneCol].toString().toLowerCase().trim();
+      var rowName    = nameCol >= 0 ? values[i][nameCol].toString().toLowerCase().trim() : '';
+
+      var companyMatch = rowCompany === targetCompany;
+      var phoneMatch   = rowPhone   === targetPhone;
+      var nameMatch    = !targetName || !rowName || rowName === targetName;
+
+      if (companyMatch && phoneMatch && nameMatch) {
         matchRow = i + 2;
         break;
       }
     }
 
     if (matchRow === -1) {
-      return respond({ error: 'No row found matching company "' + data.company + '" and phone "' + data.phone + '".' });
+      return respond({ error: 'No row found matching name "' + data.name + '", company "' + data.company + '" and phone "' + data.phone + '".' });
     }
 
     var currentHeaders = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0]
