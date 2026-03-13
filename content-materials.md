@@ -11,6 +11,13 @@ Updated whenever we do research, scraping, or outreach.
 
 **Tone:** dry and sharp, not dunking. observational. practical. wry, not mean. specific. builder/operator. "I've seen this happen."
 
+### Email tone
+- For outreach emails, use a slightly more polished and softened tone than X posts
+- Good phrasing in this lane: I’ve been looking into..., We’ve been working on..., At the moment, we’re offering..., If it sounds useful..., send it over for your thoughts, no pressure if it doesn’t feel like the right fit
+- Keep it friendly and credible, smooth and specific, polished but not stiff
+- Use soft CTAs like: If you’re interested, just reply yes and I’ll send over a few details on how it would work
+- Let examples flow naturally in one sentence rather than choppy fragments
+
 **What it is NOT:**
 - making fun of the business owner
 - sarcastic for the sake of it
