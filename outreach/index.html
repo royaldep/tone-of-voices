@@ -717,7 +717,7 @@
 </div>
 
 <!-- Templates -->
-<div class="templates-section" id="templatesSection">
+<div class="templates-section open" id="templatesSection">
   <div class="templates-header" onclick="this.parentElement.classList.toggle('open')">
     <span class="templates-title">Email Templates</span>
     <span class="templates-toggle">▼</span>
@@ -1157,6 +1157,9 @@ function render() {
     ).join('');
   }
 
+  renderTemplateVars();
+  renderTemplateDropdown();
+
   if (contacts.length === 0) {
     listEl.innerHTML = '<div class="empty-state">No contacts yet — paste from Google Sheets or add a row manually.</div>';
     headerEl.style.display = 'none';
@@ -1279,9 +1282,6 @@ function render() {
       </div>
     </div>`;
   }).join('');
-
-  renderTemplateVars();
-  renderTemplateDropdown();
 }
 
 function escHtml(str) {
