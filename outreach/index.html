@@ -974,6 +974,20 @@ function applyTemplate() {
   render();
   openRows.forEach(id => document.getElementById(id)?.classList.add('open'));
 
+  // stagger syncs to avoid hitting Google's rate limit
+  const statusEl = document.getElementById('sheetsStatus');
+  targets.forEach((c, i) => {
+    const ci = contacts.indexOf(c);
+    if (ci < 0) return;
+    setTimeout(() => {
+      syncToSheets(ci);
+      if (statusEl) {
+        statusEl.textContent = `Syncing ${i + 1}/${targets.length}...`;
+        statusEl.className = 'sheets-status syncing';
+      }
+    }, i * 300);
+  });
+
   const btn = document.querySelector('.btn-tmpl-apply');
   if (btn) {
     const orig = btn.textContent;
