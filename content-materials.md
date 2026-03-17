@@ -269,6 +269,11 @@ niche -> current tools -> sharpest pain -> replaceable wedge -> starter offer ->
 ### Reusable vertical research recipe
 Use this when Stacy asks for a new vertical or niche to analyze.
 
+Note on evidence quality:
+- Prefer recent pain signals and discussions as close to 2026 as possible
+- Older forum threads can help with pattern recognition, but recent evidence should carry more weight when validating whether a niche is still active and painful now
+- Good public pain signals include owners describing late-night restocking, inventory counts during slow hours, reorder chaos, stockouts, waste, and no dedicated inventory manager
+
 Core pattern:
 vertical -> ugly repeated workflow -> existing spend -> weak incumbent -> narrow wedge -> starter offer -> expansion path -> money story -> pitch -> reach method -> risks -> verdict
 
