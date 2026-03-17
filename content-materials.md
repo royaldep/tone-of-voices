@@ -266,6 +266,29 @@ niche -> current tools -> sharpest pain -> replaceable wedge -> starter offer ->
 - **Risks:** if inquiry volume is too low, value may not feel urgent
 - **Verdict:** strong wedge, easy to test
 
+### Reusable vertical research recipe
+Use this when Stacy asks for a new vertical or niche to analyze.
+
+Core pattern:
+vertical -> ugly repeated workflow -> existing spend -> weak incumbent -> narrow wedge -> starter offer -> expansion path -> money story -> pitch -> reach method -> risks -> verdict
+
+Prompt shape:
+- pick a narrow vertical
+- find the ugly repeated workflow
+- confirm there is existing software spend or heavy manual work
+- identify where the incumbent is weak
+- define a narrow wedge we could replace first
+- define the starter offer
+- define the expansion path
+- define the money story
+- define the pitch angle
+- define the creative reach method
+- define the discovery questions
+- define the risks
+- give a final verdict
+
+Output should avoid broad market summaries and prioritize very specific, daily-use, workflow-first tools that look replaceable and attackable.
+
 ## Restaurant Review Pattern Insights (Mar 10 2026)
 
 ### Core takeaway
