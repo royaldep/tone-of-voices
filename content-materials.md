@@ -171,6 +171,101 @@ People engage most with posts that feel personal and specific — not generic ad
 
 ---
 
+## Niche Analysis Framework (Mar 17 2026)
+
+Use this to evaluate niches for software replacement / automation opportunities.
+
+### Template
+1. **Niche**
+   - What is the niche?
+   - Who are the businesses?
+   - How big / small are they usually?
+
+2. **Current software / current behavior**
+   - What tools are they using now?
+   - What are they paying for?
+   - What are they still doing manually?
+
+3. **Sharpest pain**
+   - What specific part hurts the most?
+   - Where do leads, time, or money get lost?
+   - What repeats often enough to matter?
+
+4. **Replaceable wedge**
+   - What small part can we replace first?
+   - What is narrow enough to be believable?
+   - What does not require replacing their whole stack?
+
+5. **Starter offer**
+   - What is the easiest thing to say yes to?
+   - Free tier?
+   - Pilot?
+   - Limited feature?
+   - Limited volume?
+   - One channel first?
+
+6. **Expansion path**
+   - Once the wedge works, what comes next?
+   - More channels?
+   - More automation?
+   - More locations?
+   - More workflow coverage?
+
+7. **Money story**
+   - How does this save money?
+   - How does this make money?
+   - What software spend can it replace?
+   - What staff time can it reduce?
+   - What missed leads can it recover?
+
+8. **Pitch angle**
+   - What is the simplest version of the pitch?
+   - What exact pain / tool / workflow are we naming?
+
+9. **Creative reach method**
+   - How can we reach them without sounding like generic sales?
+   - Audit?
+   - Free first setup?
+   - Workflow review?
+   - Niche-specific example?
+   - Cost-savings angle?
+
+10. **Discovery questions**
+   - What do we need to learn before pitching harder?
+   - What tool do they use now?
+   - What part do they hate?
+   - What do they rely on most?
+   - What would make them switch?
+
+11. **Risks**
+   - What makes this niche hard?
+   - Switching cost?
+   - Trust barrier?
+   - Compliance?
+   - Low urgency?
+   - Hard integrations?
+
+12. **Verdict**
+   - Is this worth testing?
+   - Why?
+   - What should the first experiment be?
+
+### Short version
+niche -> current tools -> sharpest pain -> replaceable wedge -> starter offer -> expansion path -> money story -> pitch -> reach method -> risks
+
+### Example: Google / Yelp auto-responder wedge
+- **Niche:** local service businesses
+- **Current behavior:** Google Business messages, Yelp, manual replies, staff answering repetitive questions
+- **Sharpest pain:** high-intent inquiries sit too long or get handled in fragments
+- **Replaceable wedge:** Google + Yelp auto-responder
+- **Starter offer:** free first 50 inquiries
+- **Expansion path:** Instagram, Facebook, X, website chat
+- **Money story:** fewer missed leads, less staff time, lower software spend than Podium-style stack
+- **Pitch angle:** start with Google and Yelp for free, expand if useful
+- **Creative reach method:** message them after seeing slow responses, bad reviews, or unanswered listing questions
+- **Risks:** if inquiry volume is too low, value may not feel urgent
+- **Verdict:** strong wedge, easy to test
+
 ## Restaurant Review Pattern Insights (Mar 10 2026)
 
 ### Core takeaway
