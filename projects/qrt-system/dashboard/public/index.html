@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>X QRT Dashboard</title>
+  <style>
+    :root {
+      --bg-primary: #0d1117;
+      --bg-secondary: #161b22;
+      --bg-card: #21262d;
+      --border: #30363d;
+      --text-primary: #c9d1d9;
+      --text-secondary: #8b949e;
+      --accent-blue: #58a6ff;
+      --accent-green: #238636;
+      --accent-red: #da3633;
+      --accent-purple: #8957e5;
+      --accent-orange: #f0883e;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h1 { color: var(--accent-blue); font-size: 1.8em; }
+
+    .status-badge {
+      background: var(--accent-green);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+    }
+
+    /* Tabs */
+    .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+
+    .tab {
+      padding: 12px 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .tab:hover { background: var(--bg-secondary); }
+    .tab.active { background: var(--accent-green); color: white; border-color: var(--accent-green); }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Stats Grid */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; margin-bottom: 30px; }
+
+    .stat-card {
+      background: var(--bg-card);
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .stat-number { font-size: 2.5em; font-weight: 700; color: var(--accent-blue); }
+    .stat-label { color: var(--text-secondary); margin-top: 5px; font-size: 14px; }
+    .stat-card.approved .stat-number { color: var(--accent-green); }
+    .stat-card.pending .stat-number { color: var(--accent-orange); }
+    .stat-card.posted .stat-number { color: var(--accent-purple); }
+    .stat-card.rejected .stat-number { color: var(--accent-red); }
+
+    /* Drafts */
+    .drafts-grid { display: grid; gap: 15px; }
+
+    .draft-card {
+      background: var(--bg-card);
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .draft-card:hover { border-color: var(--accent-blue); }
+
+    .draft-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .draft-id { font-family: monospace; color: var(--text-secondary); font-size: 12px; }
+
+    .draft-status {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .status-pending { background: var(--accent-orange); color: #000; }
+    .status-approved { background: var(--accent-green); color: #fff; }
+    .status-rejected { background: var(--accent-red); color: #fff; }
+    .status-posted { background: var(--accent-purple); color: #fff; }
+
+    .draft-text {
+      background: var(--bg-secondary);
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 14px;
+      white-space: pre-wrap;
+      margin-bottom: 10px;
+      border-left: 3px solid var(--accent-blue);
+    }
+
+    .draft-meta {
+      display: flex;
+      gap: 20px;
+      color: var(--text-secondary);
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+
+    .rejection-reason {
+      background: rgba(218, 54, 51, 0.1);
+      border: 1px solid var(--accent-red);
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 13px;
+      color: #f0a0a0;
+      margin-bottom: 12px;
+    }
+
+    .edit-area {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      width: 100%;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 14px;
+      resize: vertical;
+      min-height: 80px;
+      margin-bottom: 10px;
+    }
+
+    .edit-area:focus { outline: none; border-color: var(--accent-blue); }
+
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: opacity 0.2s;
+    }
+
+    .btn:hover { opacity: 0.85; }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .btn-approve { background: var(--accent-green); color: #fff; }
+    .btn-reject { background: var(--accent-red); color: #fff; }
+    .btn-post { background: var(--accent-purple); color: #fff; }
+    .btn-save { background: var(--accent-blue); color: #fff; }
+    .btn-delete { background: transparent; border: 1px solid var(--accent-red); color: var(--accent-red); }
+
+    .inline-error {
+      font-size: 12px;
+      color: var(--accent-red);
+      margin-left: auto;
+    }
+
+    /* Report */
+    .report-section {
+      background: var(--bg-card);
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+    }
+
+    .report-section h2 { color: var(--accent-blue); margin-bottom: 15px; font-size: 1.2em; }
+
+    .log-entry {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+
+    .log-entry:last-child { border-bottom: none; }
+    .log-time { color: var(--text-secondary); font-size: 11px; margin-right: 8px; }
+
+    /* Filters */
+    .filters { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+
+    .filter-btn {
+      padding: 8px 16px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .filter-btn.active { background: var(--accent-blue); color: white; border-color: var(--accent-blue); }
+
+    .empty-state { text-align: center; padding: 40px; color: var(--text-secondary); }
+
+    .error-state { text-align: center; padding: 40px; color: var(--accent-red); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>X QRT Dashboard</h1>
+      <span class="status-badge">● Live</span>
+    </header>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="overview">📊 Overview</button>
+      <button class="tab" data-tab="drafts">✏️ Drafts</button>
+      <button class="tab" data-tab="report">📋 Manager Report</button>
+    </div>
+
+    <!-- OVERVIEW TAB -->
+    <div id="overview" class="tab-content active">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number" id="stat-total">—</div>
+          <div class="stat-label">Total Drafts</div>
+        </div>
+        <div class="stat-card pending">
+          <div class="stat-number" id="stat-pending">—</div>
+          <div class="stat-label">Pending Review</div>
+        </div>
+        <div class="stat-card approved">
+          <div class="stat-number" id="stat-approved">—</div>
+          <div class="stat-label">Approved</div>
+        </div>
+        <div class="stat-card rejected">
+          <div class="stat-number" id="stat-rejected">—</div>
+          <div class="stat-label">Rejected</div>
+        </div>
+        <div class="stat-card posted">
+          <div class="stat-number" id="stat-posted">—</div>
+          <div class="stat-label">Posted</div>
+        </div>
+      </div>
+
+      <div class="report-section">
+        <h2>Quick Actions</h2>
+        <p style="color: var(--text-secondary);">
+          Go to the Drafts tab to review, edit, approve, or reject QRT drafts.
+        </p>
+      </div>
+    </div>
+
+    <!-- DRAFTS TAB -->
+    <div id="drafts" class="tab-content">
+      <div class="filters">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="pending">Pending</button>
+        <button class="filter-btn" data-filter="approved">Approved</button>
+        <button class="filter-btn" data-filter="rejected">Rejected</button>
+        <button class="filter-btn" data-filter="posted">Posted</button>
+      </div>
+      <div class="drafts-grid" id="drafts-list"></div>
+    </div>
+
+    <!-- REPORT TAB -->
+    <div id="report" class="tab-content">
+      <div class="report-section">
+        <h2>System Status</h2>
+        <div id="system-status">Loading...</div>
+      </div>
+      <div class="report-section">
+        <h2>Recent Activity</h2>
+        <div id="recent-activity">Loading...</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API = "https://clydetolbotdashboard.stacydonnaj.workers.dev/api";
+    let currentFilter = 'all';
+    let statsInterval = null;
+
+    // ── Utilities ─────────────────────────────────────────────────────────
+
+    function esc(str) {
+      return String(str ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function showInlineError(actionsEl, msg) {
+      const existing = actionsEl.querySelector('.inline-error');
+      if (existing) existing.remove();
+      const el = document.createElement('span');
+      el.className = 'inline-error';
+      el.textContent = msg;
+      actionsEl.appendChild(el);
+      setTimeout(() => el.remove(), 4000);
+    }
+
+    // ── Tab switching ─────────────────────────────────────────────────────
+
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.tab).classList.add('active');
+        if (tab.dataset.tab === 'report') loadReport();
+      });
+    });
+
+    // ── Filter buttons ────────────────────────────────────────────────────
+
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.dataset.filter;
+        loadDrafts();
+      });
+    });
+
+    // ── Stats ─────────────────────────────────────────────────────────────
+
+    async function loadStats() {
+      try {
+        const res = await fetch(`${API}/stats`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const stats = await res.json();
+        document.getElementById('stat-total').textContent = stats.total;
+        document.getElementById('stat-pending').textContent = stats.pending;
+        document.getElementById('stat-approved').textContent = stats.approved;
+        document.getElementById('stat-rejected').textContent = stats.rejected;
+        document.getElementById('stat-posted').textContent = stats.posted;
+      } catch (e) {
+        console.error('Stats error:', e);
+      }
+    }
+
+    // ── Drafts ────────────────────────────────────────────────────────────
+
+    async function loadDrafts() {
+      const list = document.getElementById('drafts-list');
+      list.innerHTML = '<div class="empty-state">Loading...</div>';
+      try {
+        const res = await fetch(`${API}/drafts`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        let drafts = data.drafts || [];
+
+        if (currentFilter !== 'all') {
+          drafts = drafts.filter(d => d.status === currentFilter);
+        }
+
+        if (drafts.length === 0) {
+          list.innerHTML = '<div class="empty-state">No drafts found</div>';
+          return;
+        }
+
+        list.innerHTML = '';
+        drafts.forEach(d => {
+          const card = document.createElement('div');
+          card.className = 'draft-card';
+
+          const date = new Date(d.createdAt || d.created_at);
+          const dateStr = isNaN(date) ? 'Unknown date' : date.toLocaleString();
+
+          const sourceLink = d.source_url
+            ? `<a href="${esc(d.source_url)}" target="_blank" rel="noopener" style="color: var(--accent-blue)">${esc(d.source || 'Source')}</a>`
+            : esc(d.source || 'Unknown source');
+
+          const rejectionHtml = (d.status === 'rejected' && d.rejection_reason)
+            ? `<div class="rejection-reason">Rejected: ${esc(d.rejection_reason)}</div>`
+            : '';
+
+          const approveRejectHtml = d.status === 'pending'
+            ? `<button class="btn btn-approve" data-action="approved">✓ Approve</button>
+               <button class="btn btn-reject" data-action="rejected">✗ Reject</button>`
+            : '';
+
+          const postHtml = d.status === 'approved'
+            ? `<button class="btn btn-post" data-action="posted">🚀 Post</button>`
+            : '';
+
+          card.innerHTML = `
+            <div class="draft-header">
+              <span class="draft-id">${esc(d.id.substring(0, 12))}…</span>
+              <span class="draft-status status-${esc(d.status)}">${esc(d.status)}</span>
+            </div>
+            <div class="draft-meta">
+              <span>📅 ${esc(dateStr)}</span>
+              <span>🔗 ${sourceLink}</span>
+            </div>
+            ${rejectionHtml}
+            <textarea class="edit-area">${esc(d.qrt_text || '')}</textarea>
+            <div class="actions">
+              <button class="btn btn-save" data-action="save">💾 Save</button>
+              ${approveRejectHtml}
+              ${postHtml}
+              <button class="btn btn-delete" data-action="delete">🗑</button>
+            </div>
+          `;
+
+          // Attach event listeners (no inline onclick — safe event delegation)
+          const actionsEl = card.querySelector('.actions');
+          const textarea = card.querySelector('.edit-area');
+
+          actionsEl.addEventListener('click', async (e) => {
+            const btn = e.target.closest('[data-action]');
+            if (!btn) return;
+            const action = btn.dataset.action;
+            btn.disabled = true;
+
+            try {
+              if (action === 'save') {
+                const res = await fetch(`${API}/drafts/${encodeURIComponent(d.id)}`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ qrt_text: textarea.value }),
+                });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                await loadDrafts();
+
+              } else if (action === 'delete') {
+                if (!confirm('Delete this draft?')) { btn.disabled = false; return; }
+                const res = await fetch(`${API}/drafts/${encodeURIComponent(d.id)}`, { method: 'DELETE' });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                loadStats();
+                await loadDrafts();
+
+              } else {
+                // status change: approved / rejected / posted
+                let rejection_reason = null;
+                if (action === 'rejected') {
+                  const r = prompt('Why are you rejecting this?');
+                  if (r === null) { btn.disabled = false; return; }
+                  rejection_reason = r.trim().slice(0, 500) || null;
+                }
+                const res = await fetch(`${API}/drafts/${encodeURIComponent(d.id)}`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ status: action, rejection_reason }),
+                });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                loadStats();
+                await loadDrafts();
+              }
+            } catch (err) {
+              btn.disabled = false;
+              showInlineError(actionsEl, `Error: ${err.message}`);
+            }
+          });
+
+          list.appendChild(card);
+        });
+
+      } catch (e) {
+        list.innerHTML = `<div class="error-state">Failed to load drafts: ${esc(e.message)}</div>`;
+      }
+    }
+
+    // ── Report ────────────────────────────────────────────────────────────
+
+    async function loadReport() {
+      try {
+        const [healthRes, activityRes] = await Promise.all([
+          fetch(`${API}/health`),
+          fetch(`${API}/activity`),
+        ]);
+
+        if (!healthRes.ok) throw new Error(`Health check failed: HTTP ${healthRes.status}`);
+        const health = await healthRes.json();
+
+        document.getElementById('system-status').innerHTML = `
+          <p>Status: <span style="color: var(--accent-green)">● Operational</span></p>
+          <p style="color: var(--text-secondary); font-size: 13px; margin-top: 6px;">Last check: ${esc(new Date(health.timestamp).toLocaleString())}</p>
+        `;
+
+        const activityEl = document.getElementById('recent-activity');
+
+        if (!activityRes.ok) {
+          activityEl.innerHTML = '<div class="log-entry" style="color: var(--accent-red)">Failed to load activity log</div>';
+          return;
+        }
+
+        const activity = await activityRes.json();
+        const entries = activity.activity || [];
+
+        if (entries.length === 0) {
+          activityEl.innerHTML = '<div class="log-entry">No recent activity</div>';
+          return;
+        }
+
+        activityEl.innerHTML = '';
+        entries.forEach(entry => {
+          const el = document.createElement('div');
+          el.className = 'log-entry';
+          const time = entry.ts ? new Date(entry.ts).toLocaleString() : '';
+          const timeSpan = document.createElement('span');
+          timeSpan.className = 'log-time';
+          timeSpan.textContent = time;
+          const msgSpan = document.createElement('span');
+          msgSpan.textContent = entry.msg || '';
+          el.appendChild(timeSpan);
+          el.appendChild(msgSpan);
+          activityEl.appendChild(el);
+        });
+
+      } catch (e) {
+        document.getElementById('system-status').innerHTML =
+          `<p style="color: var(--accent-red)">Error: ${esc(e.message)}</p>`;
+      }
+    }
+
+    // ── Init ──────────────────────────────────────────────────────────────
+
+    loadStats();
+    loadDrafts();
+
+    // Auto-refresh stats every 30s, cancelling any previous interval
+    if (statsInterval) clearInterval(statsInterval);
+    statsInterval = setInterval(loadStats, 30000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "description": "Filtered X following list - AI/agent/tech only (no crypto)",
+  "accounts": [
+    {"username": "agentcardai", "display": "AI Agents", "url": "https://x.com/agentcardai"},
+    {"username": "aiedge_", "display": "AI Edge", "url": "https://x.com/aiedge_"},
+    {"username": "alexcooldev", "display": "Alex Coold", "url": "https://x.com/alexcooldev"},
+    {"username": "amasad", "display": "Amin (AI founder)", "url": "https://x.com/amasad"},
+    {"username": "arcads_ai", "display": "Arcads AI", "url": "https://x.com/arcads_ai"},
+    {"username": "replit", "display": "Replit", "url": "https://x.com/replit"},
+    {"username": "theagentangle", "display": "The Agent Angle", "url": "https://x.com/theagentangle"},
+    {"username": "tengyanAI", "display": "Teng Yan AI", "url": "https://x.com/tengyanAI"},
+    {"username": "turborepo", "display": "Turborepo", "url": "https://x.com/turborepo"},
+    {"username": "echodotxyz", "display": "Echo", "url": "https://x.com/echodotxyz"}
+  ],
+  "mainAccounts": [
+    "mai_on_chain",
+    "Intenex",
+    "agentcardai"
+  ],
+  "created": "2026-04-06T03:21:00-07:00",
+  "updated": "2026-04-06T03:21:00-07:00"
+}

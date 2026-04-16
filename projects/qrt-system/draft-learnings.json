@@ -1,0 +1,11 @@
+{
+  "description": "Draft quality learnings - patterns from critique feedback",
+  "learnings": [],
+  "patterns": {
+    "too_ai": ["generic phrases", "wordy", "explains too much"],
+    "formulaic": ["agree and add", "first the point then", "its interesting because"],
+    "not_useful": ["just restates", "no new angle", "too vague"],
+    "good": ["specific", "short", "fresh angle", "connects to something real"]
+  },
+  "updated": "2026-04-06T14:20:00-07:00"
+}

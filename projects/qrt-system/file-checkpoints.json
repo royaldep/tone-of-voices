@@ -1,0 +1,12 @@
+{
+  "description": "File checkpoints for manager to track changes since last scan",
+  "files": {
+    "x-following-filtered.json": {"lastChecked": "2026-04-06T03:21:00-07:00", "lastHash": ""},
+    "x-last-seen.json": {"lastChecked": "2026-04-06T03:21:00-07:00", "lastHash": ""},
+    "x-qrt-queue.json": {"lastChecked": "2026-04-06T03:21:00-07:00", "lastHash": ""},
+    "draft-learnings.json": {"lastChecked": "2026-04-06T14:20:00-07:00", "lastHash": ""},
+    "systems-notes.md": {"lastChecked": "2026-04-06T14:20:00-07:00", "lastHash": ""},
+    "dashboard/data/drafts.json": {"lastChecked": "2026-04-06T14:57:00-07:00", "lastHash": ""}
+  },
+  "updated": "2026-04-06T14:20:00-07:00"
+}

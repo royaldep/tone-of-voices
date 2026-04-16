@@ -1,5 +1,44 @@
 # MEMORY.md
 
+## Project Folder Mapping
+
+When working on these topics, use these folders:
+
+| Topic | Folder |
+|-------|--------|
+| QRT / X drafts / Twitter automation | `projects/qrt-system/` |
+| Research / content gathering | `research/` |
+| Daily notes | `memory/YYYY-MM-DD.md` |
+| Skills | `skills/` |
+| Long-term memory | `MEMORY.md` |
+
+**Rule for new projects:**
+1. Create folder under `projects/PROJECTNAME/`
+2. Add mapping to this table
+3. Never put project files in workspace root
+4. If unsure where a file goes, check this table first
+
+## Fountain of Scale QRT Stance
+
+**Our POV:** Pro-automation, pro-building. We build automation systems for small businesses (restaurants, contractors). We're interested in real agent/LLM innovation that could matter to the businesses we serve.
+
+**What to QRT:**
+- Cool automation stuff being built
+- Real agent infrastructure (not hype)
+- Things we could actually build
+- Interesting agent/LLM/AI developments from a builder's POV
+
+**What to avoid:**
+- Generic "AI is coming" takes
+- Prediction threads without substance
+- Anything not grounded in something real
+- Banned words: interesting, great point, definitely, real, really, actually, feels, feel, quiet, em dashes
+- No "not X but Y" framing, no snark
+
+**Tone:** Short, specific, dry and sharp. Show the scene, don't explain the insight.
+
+**Important:** Always check the correct folder before reading/writing files. Don't put project files in workspace root.
+
 ## Writing & Tone Rules
 
 - No em dashes, no hyphens in copy, no double quotes

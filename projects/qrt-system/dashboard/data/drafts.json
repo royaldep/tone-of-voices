@@ -1,0 +1,230 @@
+{
+  "drafts": [
+    {
+      "id": "1775609816563",
+      "qrt_text": "clicky is the vibe coding equivalent for learning -- ai that sits next to your cursor and shows you how. next-level learning tool.",
+      "source": "@FarzaTV - Apr 6",
+      "status": "pending",
+      "createdAt": "2026-04-08T00:56:56.563Z",
+      "source_url": "https://x.com/FarzaTV/status/2041314633978659092"
+    },
+    {
+      "id": "1775609812519",
+      "qrt_text": "claude mythos preview -- anthropic moving fast. opus 4.6 was just two months ago.",
+      "source": "@alexalbert__ - 6h",
+      "status": "pending",
+      "createdAt": "2026-04-08T00:56:52.519Z",
+      "source_url": "https://x.com/alexalbert__/status/2041579938537775160"
+    },
+    {
+      "id": "1775609798530",
+      "qrt_text": "finally a claude model that actually watches the videos it cites. the ai citation problem just got a little more real.",
+      "source": "@samgrows - Apr 6",
+      "status": "pending",
+      "createdAt": "2026-04-08T00:56:38.530Z",
+      "source_url": "https://x.com/samgrows/status/2041219569050677442"
+    },
+    {
+      "id": "1775602020201",
+      "qrt_text": "I counted 47 Chainlink prediction 2027 articles this week. None had a date. None had a methodology. Just AI scraping AI, calling it analysis.",
+      "source": "explore - 2026-04-06T21:59:00Z",
+      "status": "pending",
+      "createdAt": "2026-04-06T21:59:00Z"
+    },
+    {
+      "id": "1775602020202",
+      "qrt_text": "Your AI agent just spent $0.02 on an API call. No credit card. No approval flow. Just paid. x402 hit $600M annual volume. AI agents buying things on their own now, not soon. This changes the engineer role entirely.",
+      "source": "x402 protocol",
+      "status": "pending",
+      "createdAt": "2026-04-06T22:00:00.000Z"
+    },
+    {
+      "id": "1775601010101",
+      "qrt_text": "the ai agent advice no one gives: dont start by automating your hardest task. automate the boring stuff first -- emails, followups, templated replies. build the muscle before the marathon.",
+      "source": "@stacydjenot [personal]",
+      "status": "pending",
+      "createdAt": "2026-04-07T15:00:00.000Z",
+      "rejection_reason": "",
+      "source_url": "https://x.com/stacydj0x"
+    },
+    {
+      "id": "1775601010102",
+      "qrt_text": "Ant Group just dropped Anvita. Lets AI agents autonomously hold, trade, and settle payments in stablecoins. No humans needed. The agentic finance era did not wait for 2030.",
+      "source": "@Intenex [search]",
+      "status": "pending",
+      "createdAt": "2026-04-07T15:00:00.000Z",
+      "rejection_reason": "",
+      "source_url": "https://x.com/Intenex"
+    },
+    {
+      "id": "1775601010103",
+      "qrt_text": "n8n went from Zapier alternative to visual AI workflow engine. Chain LLM calls, vector DB queries, and tool-using agents, no code required. The no-code agent space is getting real.",
+      "source": "@stacy [DEV Community]",
+      "status": "pending",
+      "createdAt": "2026-04-07T15:00:00.000Z",
+      "rejection_reason": "",
+      "source_url": "https://dev.to/stacy"
+    },
+    {
+      "id": "1775601010104",
+      "qrt_text": "67k+ software engineering jobs open right now. Highest in 3+ years, up 30% YTD. The narrative that AI is replacing engineers? Not backed by the data, at least not yet.",
+      "source": "@stacy [Business Insider]",
+      "status": "pending",
+      "createdAt": "2026-04-07T15:00:00.000Z",
+      "rejection_reason": "",
+      "source_url": "https://businessinsider.com"
+    },
+    {
+      "id": "1775601010105",
+      "qrt_text": "the model does not hear your question. it only sees what you show it.",
+      "source": "@ArchiveExplorer [explore]",
+      "status": "pending",
+      "createdAt": "2026-04-07T15:00:00.000Z",
+      "rejection_reason": "",
+      "source_url": "https://x.com/explore"
+    },
+    {
+      "id": "1775601010106",
+      "qrt_text": "lessons in what matters: time or money. never both. (91yo building w/ Claude: vibe coding spread to non-programmers now)",
+      "source": "@amasad [following]",
+      "status": "pending",
+      "createdAt": "2026-04-07T15:00:00.000Z",
+      "rejection_reason": "",
+      "source_url": "https://x.com/amasad"
+    },
+    {
+      "id": "1775601010107",
+      "qrt_text": "the hard part is knowing which variable matters. IBM says 2025 is the year of agents, but theres nuance in every claim.",
+      "source": "@mai_on_chain [main-account]",
+      "status": "pending",
+      "createdAt": "2026-04-07T15:00:00.000Z",
+      "rejection_reason": "",
+      "source_url": "https://x.com/mai_on_chain"
+    },
+    {
+      "id": "1775601010108",
+      "qrt_text": "The billionaire test: if you cant explain your idea to a busy founder in 30 seconds, its not ready yet. Use it to pressure-check pitch decks.",
+      "source": "@aiedge_ [explore]",
+      "status": "pending",
+      "createdAt": "2026-04-07T15:00:00.000Z",
+      "rejection_reason": "",
+      "source_url": "https://x.com/aiedge_"
+    },
+    {
+      "id": "1775601010109",
+      "qrt_text": "leaks work better than docs.",
+      "source": "@aiedge_ [following]",
+      "status": "pending",
+      "createdAt": "2026-04-07T15:00:00.000Z",
+      "rejection_reason": "",
+      "source_url": "https://x.com/aiedge_"
+    },
+    {
+      "id": "1775601010110",
+      "qrt_text": "the anti-bot arms race just started. camofox dropped free, cloudflare sees through it anyway.",
+      "source": "@agentcardai [main-account]",
+      "status": "pending",
+      "createdAt": "2026-04-07T15:00:00.000Z",
+      "rejection_reason": "",
+      "source_url": "https://x.com/agentcardai"
+    },
+    {
+      "id": "1775601010111",
+      "qrt_text": "the personality matters more than the prompts. USC study: people like extroverted robots but relate to neurotic ones.",
+      "source": "@mai_on_chain [main-account]",
+      "status": "pending",
+      "createdAt": "2026-04-07T15:00:00.000Z",
+      "rejection_reason": "",
+      "source_url": "https://x.com/mai_on_chain"
+    },
+    {
+      "id": "1775604058766",
+      "qrt_text": "Agents will be your primary customer within 24 months. Thats the timeline Alchemy just put on the table. No more eventually. Theyre building the payment rails now.",
+      "source": "@Alchemy AgentPay via @agentcardai",
+      "status": "rejected",
+      "createdAt": "2026-04-07T16:19:58.766Z",
+      "updated_at": "2026-04-08T00:00:17.155Z",
+      "rejection_reason": ""
+    },
+    {
+      "id": "1775603870291",
+      "qrt_text": "all agents should have cute personalities. the penguin angle is genius.",
+      "source": "@mai_on_chain - Apr 4",
+      "status": "pending",
+      "createdAt": "2026-04-07T16:17:50.291Z",
+      "rejection_reason": ""
+    },
+    {
+      "id": "1775603304320",
+      "qrt_text": "Whale.io just launched the first AI Agent MCP for crypto casino. Agents now gamble autonomously. We really doing this?",
+      "source": "Benzinga, Whale.io MCP launch (2026-04-07)",
+      "status": "pending",
+      "createdAt": "2026-04-07T15:08:24.320Z",
+      "rejection_reason": ""
+    },
+    {
+      "id": "1775596095503",
+      "qrt_text": "Ant Group just launched Anvita. A platform where AI agents, not humans, are the main crypto traders. Agents with wallets, autonomous spending. The infrastructure for agent-to-agent commerce is here.",
+      "source": "Ant Group Anvita platform (Coindesk)",
+      "status": "pending",
+      "createdAt": "2026-04-07T13:08:15.503Z",
+      "rejection_reason": ""
+    },
+    {
+      "id": "1775581931119",
+      "qrt_text": "AI agents are no longer just analyzing markets. Ant Groups Anvita lets them actually trade, holding assets, paying each other via x402/USDC. The distinction between AI analyst and AI trader just collapsed.",
+      "source": "Ant Group Anvita platform (Coindesk, PYMNTS)",
+      "status": "pending",
+      "createdAt": "2026-04-07T09:12:11.119Z",
+      "rejection_reason": ""
+    },
+    {
+      "id": "1775574529577",
+      "qrt_text": "x402 payment protocol hit $600M annualized volume -- AI agents autonomously paying for API calls. The engineer role shifts from \"provisioner\" to \"funder\".",
+      "source": "x402 protocol (Coinbase + Cloudflare)",
+      "status": "pending",
+      "createdAt": "2026-04-07T07:08:49.577Z",
+      "rejection_reason": ""
+    },
+    {
+      "id": "1775560147372",
+      "qrt_text": "Perplexity just dropped an AI that drafts your actual tax return. 25% of workers now plan to use AI for filing -- up from 11% last year. The $15B tax prep industry just got disrupted.",
+      "source": "Perplexity Computer for Taxes",
+      "status": "pending",
+      "createdAt": "2026-04-07T03:09:07.372Z",
+      "rejection_reason": ""
+    },
+    {
+      "id": "1775552953543",
+      "qrt_text": "Crypto devs building AI agents face $1K-$5K/day bills. Anthropic just cracked down on heavy users. The cost of agentic AI is becoming the bottleneck.",
+      "source": "Anthropic restricts AI agent access",
+      "status": "pending",
+      "createdAt": "2026-04-07T01:09:13.543Z",
+      "rejection_reason": ""
+    },
+    {
+      "id": "1775538545693",
+      "qrt_text": "The agent wrapper era is ending. The founders who ship real utility, not wrappers, are the ones who will matter in 2026.",
+      "source": "qrt-agent",
+      "status": "pending",
+      "createdAt": "2026-04-06T22:09:05.693Z",
+      "rejection_reason": ""
+    },
+    {
+      "id": "1775531347427",
+      "qrt_text": "X now auto-locks accounts that mention crypto for the first time. The scam prevention logic is sound, but imagine being a dev who just learned about Bitcoin, locked out until you verify. The workaround will be glorious.",
+      "source": "explore",
+      "status": "pending",
+      "createdAt": "2026-04-06T20:09:07.427Z",
+      "rejection_reason": ""
+    },
+    {
+      "id": "1775524103666",
+      "qrt_text": "If an AI agent screws up your finances, who gets sued? Nobody. Thats the wild west of agentic AI in 2026.",
+      "source": "QRT Agent - Chainalysis/Register research",
+      "status": "pending",
+      "createdAt": "2026-04-06T18:08:23.666Z",
+      "rejection_reason": ""
+    }
+  ]
+}

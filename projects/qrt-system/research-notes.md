@@ -79,3 +79,33 @@
 - Don't just QRT from same accounts (Claude, Anthropic)
 - Actively seek smaller accounts with good insights
 - Mix: big announcements + under-the-radar builders
+
+### 14. Draft Approval Queue Management
+- Pending drafts should auto-expire after 24h if not approved
+- Add "needs review" tag for drafts from new sources
+- Priority queue: fresh (24h) + high engagement (100K+) + builder POV
+
+### 15. Posting Time Optimization
+- Analyze when X audience is most active for AI content
+- Hypothesis: early morning (6-9am) and evening (6-9pm) PST
+- Track engagement metrics of posted QRTs to validate
+
+### 16. Source URL Validation
+- Before approving drafts, validate source_url actually exists on X
+- Many approved drafts have broken URLs (404s)
+- Auto-validate via browser or curl HEAD request
+
+### 17. Recency Enforcement (<48h)
+- Only draft posts under 48 hours old
+- Stale drafts (5+ days) don't perform well on QRTs
+- Auto-expire pending drafts after 24h if not approved
+
+### 6. Source URL Validation
+- Many approved drafts have invalid/broken source URLs
+- Add validation step: try to fetch source_url before approving
+- Skip drafts where source returns 404 or is not a valid tweet
+
+### 7. Freshness Priority
+- Posts older than 48h unlikely to perform well on QRT
+- Add timestamp check: only add drafts under 48h old
+- Could auto-expire old drafts in dashboard

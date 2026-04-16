@@ -43,3 +43,25 @@ Docker build fails on Apple Silicon due to platform mismatch
 
 ---
 
+## [LRN-20260310-001] correction
+
+**Logged**: 2026-03-10T06:12:18Z
+**Priority**: medium
+**Status**: pending
+**Area**: docs
+
+### Summary
+Stacy flagged 'way more' as sounding AI in short social replies.
+
+### Details
+In a drafted reply to her boss, the phrase 'way more useful' read as too AI sounding. Prefer simpler, more natural phrasing in short supportive replies.
+
+### Suggested Action
+Avoid filler intensifiers like 'way more' in short message drafts for Stacy. Use cleaner wording like 'more useful', 'stronger', or rewrite the sentence entirely.
+
+### Metadata
+- Source: user_feedback
+- Related Files: MEMORY.md, .learnings/LEARNINGS.md
+- Tags: tone, writing, correction
+
+---

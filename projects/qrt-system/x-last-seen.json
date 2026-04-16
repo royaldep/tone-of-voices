@@ -1,0 +1,21 @@
+{
+  "description": "Track last seen post ID per account to prevent duplicates",
+  "mainAccounts": {
+    "mai_on_chain": {"lastPostId": null, "lastChecked": null},
+    "Intenex": {"lastPostId": null, "lastChecked": null},
+    "agentcardai": {"lastPostId": null, "lastChecked": null}
+  },
+  "followingAccounts": {
+    "aiedge_": {"lastPostId": null, "lastChecked": null},
+    "alexcooldev": {"lastPostId": null, "lastChecked": null},
+    "amasad": {"lastPostId": null, "lastChecked": null},
+    "arcads_ai": {"lastPostId": null, "lastChecked": null},
+    "replit": {"lastPostId": null, "lastChecked": null},
+    "theagentangle": {"lastPostId": null, "lastChecked": null},
+    "tengyanAI": {"lastPostId": null, "lastChecked": null},
+    "turborepo": {"lastPostId": null, "lastChecked": null},
+    "echodotxyz": {"lastPostId": null, "lastChecked": null}
+  },
+  "explore": {"lastPostId": null, "lastChecked": null},
+  "updated": "2026-04-06T03:21:00-07:00"
+}
