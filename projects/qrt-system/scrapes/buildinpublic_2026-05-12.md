@@ -387,8 +387,8 @@ Source: x.com/i/communities/1493446837214187523
 
 ## Summary
 
-**Total posts collected:** ~100
+**Total posts collected:** 25 (from Top feed)
 **Community:** Build in Public (257K Members)
 **Scraped:** 2026-05-12
 **Source:** x.com/i/communities/1493446837214187523
-**Note:** Approximately 100 posts from the Top feed. Community is very active with new posts constantly appearing.
+**Note:** Community is very active with new posts constantly appearing.
