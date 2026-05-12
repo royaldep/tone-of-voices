@@ -83,3 +83,18 @@
 | 00:30 PDT | File saved | SUCCESS | nickcammarata_v2.md created |
 
 **Total posts:** 62 (Apr 1 - May 12, 2026)
+
+---
+
+## nickcammarata v4 Scrape - 2026-05-12
+
+| Time | Action | Status | Notes |
+|------|--------|--------|-------|
+| 01:30 PDT | Task started | - | v4 scrape: @nickcammarata with URLs, Apr 1 - May 12 2026 |
+| 01:31 PDT | Profile opened | SUCCESS | Loaded x.com/nickcammarata |
+| 01:32 PDT | Scrolling | SUCCESS | Scroll + collect posts with URLs |
+| 01:40 PDT | Data compiled | SUCCESS | 64 posts with URLs from Apr 1 - May 12 |
+| 01:40 PDT | File saved | SUCCESS | nickcammarata_v4.md created |
+
+**Total posts:** 64 (Apr 1 - May 12, 2026)
+**Note:** v4 includes URLs for every post
