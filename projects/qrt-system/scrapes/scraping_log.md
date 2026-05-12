@@ -98,3 +98,18 @@
 
 **Total posts:** 64 (Apr 1 - May 12, 2026)
 **Note:** v4 includes URLs for every post
+
+---
+
+## jhanatech v2 Scrape - 2026-05-12
+
+| Time | Action | Status | Notes |
+|------|--------|--------|-------|
+| 01:37 PDT | Task started | - | v2 scrape: @jhanatech with URLs, Apr 1 - May 12 2026 |
+| 01:38 PDT | Profile opened | SUCCESS | Loaded x.com/jhanatech |
+| 01:38 PDT | Scrolling | SUCCESS | Scroll + collect posts with URLs |
+| 01:39 PDT | Data compiled | SUCCESS | 5 posts with URLs from Apr 1 - May 12 |
+| 01:39 PDT | File saved | SUCCESS | jhanatech_v2.md created |
+
+**Total posts:** 5 (Apr 1 - May 12, 2026)
+**Note:** v2 includes URLs - low post volume
