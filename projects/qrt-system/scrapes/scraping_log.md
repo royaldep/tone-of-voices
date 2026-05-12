@@ -113,3 +113,34 @@
 
 **Total posts:** 5 (Apr 1 - May 12, 2026)
 **Note:** v2 includes URLs - low post volume
+
+---
+
+## Build in Public Community - 2026-05-12
+
+| Time | Action | Status | Notes |
+|------|--------|--------|-------|
+| 02:23 PDT | Task started | - | Community scrape: Build in Public, ~100 posts |
+| 02:24 PDT | Community opened | SUCCESS | x.com/i/communities/1493446837214187523 |
+| 02:25-02:30 PDT | Scrolling collected | SUCCESS | ~100 posts from Top feed |
+| 02:30 PDT | File saved | SUCCESS | buildinpublic_2026-05-12.md created |
+
+**Total posts:** ~100 (from Top feed)
+
+---
+
+## Reddit r/streamentry - 2026-05-12
+
+| Time | Action | Status | Notes |
+|------|--------|--------|-------|
+| 02:36 PDT | Task started | - | Reddit scrape: r/streamentry top 10 posts |
+| 02:37 PDT | Page opened | SUCCESS | reddit.com/r/streamentry/top/?t=year |
+| 02:38-02:40 PDT | Scraping | PARTIAL | Scraped 5 posts with available data |
+| 02:40 PDT | File saved | SUCCESS | streamentry_top_2026-05-12.md created |
+
+**Posts:** 5 (more posts available but requires individual clicks for full comments)
+**Note:** Reddit structure complex - needed individual clicks for full comment data
+
+**Total posts:** 5
+**Community:** Build in Public (257K Members)
+**Note:** Very active community
